@@ -100,7 +100,7 @@ class Notes {
         returnArr.add(input.substring(0, firstSpace).trim());
 
         // add next string based on if index is valid or not
-        if (colonIdx != -1) {
+        if (colonIdx != -1 && colonIdx > firstSpace) {
             returnArr.add(input.substring(firstSpace, colonIdx).trim());
             returnArr.add(input.substring(colonIdx + 1).trim());
         } else {
