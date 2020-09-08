@@ -5,51 +5,51 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.util.logging.Logger;
-
 public class MainActivity extends AppCompatActivity {
+    
+    private static final String TAG = "LIFECYCLE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.i("LIFECYCLE", "onCreate()");
+        Log.i(TAG, "onCreate()");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i("LIFECYCLE", "onStart()");
+        Log.i(TAG, "onStart()");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("LIFECYCLE", "onResume()");
+        Log.i(TAG, "onResume()");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i("LIFECYCLE", "onPause()");
+        Log.i(TAG, "onPause()");
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.i("LIFECYCLE", "onRestart()");
+        Log.i(TAG, "onRestart()");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i("LIFECYCLE", "onStop()");
+        Log.i(TAG, "onStop()");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i("LIFECYCLE", "onDestroy()");
+        Log.i(TAG, "onDestroy()");
     }
 }

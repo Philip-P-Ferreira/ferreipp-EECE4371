@@ -18,3 +18,5 @@ And when the "phone" is turned off, the callbacks are
 
     onPause()
     onStop()
+
+***Note***: onRestart() was never called as the app was started and the device rotated
