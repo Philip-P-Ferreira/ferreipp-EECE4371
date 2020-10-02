@@ -24,7 +24,7 @@ public class ClientRequestHandler {
      */
     public ClientRequestHandler(String userName) throws IOException {
         user = userName;
-        socket = new Socket(Constants.SERVER_ADDRESS, Constants.PORT);
+        socket = new Socket(EmailUtils.SERVER_ADDRESS, EmailUtils.PORT);
         outToServer = new DataOutputStream(socket.getOutputStream());
         readFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         
@@ -42,7 +42,7 @@ public class ClientRequestHandler {
         String argName[] = {"username"};
         String arg[] = {user};
 
-        sendMessage(Constants.LOG_IN, argName, arg);
+        sendMessage(EmailUtils.LOG_IN, argName, arg);
         readFromServer.readLine();
     }
 
@@ -56,7 +56,7 @@ public class ClientRequestHandler {
     public Email[] fetchMail() throws IOException {
 
         String tmp[] = {};
-        sendMessage(Constants.RETRIEVE_EMAILS, tmp, tmp);
+        sendMessage(EmailUtils.RETRIEVE_EMAILS, tmp, tmp);
         return parseEmailResponse(readFromServer.readLine());
     }
 
@@ -72,7 +72,7 @@ public class ClientRequestHandler {
         String argNames[] = {"to", "body"};
         String args[] = {mail.userField, mail.body};
 
-        sendMessage(Constants.SEND_EMAIL, argNames, args);
+        sendMessage(EmailUtils.SEND_EMAIL, argNames, args);
         readFromServer.readLine(); // listen for response
     }
 
@@ -84,7 +84,7 @@ public class ClientRequestHandler {
     public void close() throws IOException {
 
         String tmp[] = {};
-        sendMessage(Constants.LOG_OUT, tmp, tmp);
+        sendMessage(EmailUtils.LOG_OUT, tmp, tmp);
         readFromServer.readLine(); // listend to response
 
         socket.close(); // be a good client and close it out
@@ -101,13 +101,7 @@ public class ClientRequestHandler {
      * @throws IOException
      */
     private void sendMessage(String type, String[] argNames, String[] args) throws IOException {
-        // loop through each arg name and arg and construct a formatted request string
-        String msg = Constants.MSG_PREFIX + "=" + type;
-        for (int i = 0; i < argNames.length; ++i) {
-            msg += Constants.ARG_DELIM + argNames[i] + "=" + args[i];
-        }
-        outToServer.writeBytes(msg);
-        System.out.println("\n" + msg + "\n");
+        outToServer.writeBytes(EmailUtils.constructTcpMessage(type, argNames, args));
     }
 
     /**
@@ -121,7 +115,7 @@ public class ClientRequestHandler {
     private Email[] parseEmailResponse(String serverResponse) {
         
         // split resposne up into individual emails
-        String splitDelim[] = serverResponse.split(Constants.ARG_DELIM);
+        String splitDelim[] = serverResponse.split(EmailUtils.ARG_DELIM);
         String plainEmails[] = splitDelim[1].split("\\|");
         Email emails[] = new Email[plainEmails.length];
 
