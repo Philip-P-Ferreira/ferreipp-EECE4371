@@ -96,7 +96,7 @@ class EmailClient {
         return COMMAND_LIST[commandNum - 1];
     }
 
-    public static void fetchMail(ClientRequestHandler handler) {
+    public static void fetchMail(ClientRequestHandler handler) throws IOException {
 
         Email messages[] = handler.fetchMail();
 
@@ -107,7 +107,7 @@ class EmailClient {
         }
     }
     
-    public static void composeNewMail(Scanner input, ClientRequestHandler handler){
+    public static void composeNewMail(Scanner input, ClientRequestHandler handler) throws IOException{
         String toUser, body;
         
         System.out.print("To: ");

@@ -1,59 +1,142 @@
 import java.io.*;
 import java.net.*;
 
+/**
+ * ClientRequestHandler - 
+ * A class for abstracting away network calls and responses.
+ * An instance of this object represents a single user logged on
+ * into the server
+ */
 public class ClientRequestHandler {
-    private static final int PORT = 6789;
-    private static final String SERVER_ADDRESS = "10.0.2.2";
-
+    
     private String user;
     private Socket socket;
     private DataOutputStream outToServer;
     private BufferedReader readFromServer;
 
+    /**
+     * Constructor -
+     * Accepts a user name and creates an instance of that user
+     * logged into the email server
+     * 
+     * @param userName - string of user name
+     * @throws IOException
+     */
     public ClientRequestHandler(String userName) throws IOException {
         user = userName;
-        // socket = new Socket(SERVER_ADDRESS, PORT);
-        // outToServer = new DataOutputStream(socket.getOutputStream());
-        // readFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        login();
+        socket = new Socket(Constants.SERVER_ADDRESS, Constants.PORT);
+        outToServer = new DataOutputStream(socket.getOutputStream());
+        readFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         
+        // method to log into server
+        login(); 
     }
 
+    /**
+     * login - 
+     * sends login request to server, listens for resopnse
+     * 
+     * @throws IOException
+     */
     public void login() throws IOException {
-        final String logInType = "log_in";
-
-        String argName[] = {"userName"};
+        String argName[] = {"username"};
         String arg[] = {user};
 
-        sendMessage(logInType, argName, arg);
-
-        // get response from server
-        // String serverResponse = readFromServer.readLine();
-        // System.out.println(serverResponse);
+        sendMessage(Constants.LOG_IN, argName, arg);
+        readFromServer.readLine();
     }
 
-    public Email[] fetchMail() {
-        Email msgs[] = {};
-        return msgs;
+    /**
+     * fetchMail -
+     * requests the server for emails, fecthes the response, parses it, then returns it as an array of emails
+     * 
+     * @return - Array of type Email representing all Emails for a given user
+     * @throws IOException
+     */
+    public Email[] fetchMail() throws IOException {
+
+        String tmp[] = {};
+        sendMessage(Constants.RETRIEVE_EMAILS, tmp, tmp);
+        return parseEmailResponse(readFromServer.readLine());
     }
 
-    public void sendMail(Email mail){
+    /**
+     * sendMail -
+     * Send the passed in Email to the server
+     * 
+     * @param mail - Type Email that has the addressed user and the body text
+     * @throws IOException
+     */
+    public void sendMail(Email mail) throws IOException{
         
+        String argNames[] = {"to", "body"};
+        String args[] = {mail.userField, mail.body};
+
+        sendMessage(Constants.SEND_EMAIL, argNames, args);
+        readFromServer.readLine(); // listen for response
     }
 
+    /**
+     * close -
+     * sends the logout request, listends for a resposne, and closes the tcp connection
+     * @throws IOException
+     */
     public void close() throws IOException {
 
-        // send lougout message
-        // socket.close();
+        String tmp[] = {};
+        sendMessage(Constants.LOG_OUT, tmp, tmp);
+        readFromServer.readLine(); // listend to response
+
+        socket.close(); // be a good client and close it out
     }
 
+    /**
+     * sendMessage -
+     * Helper function for sending a request message to the server
+     * ASSUMES argName and args are of same length
+     * 
+     * @param type - name of request, string
+     * @param argNames - String array of all of the argument names
+     * @param args - String array of all of the arguments
+     * @throws IOException
+     */
     private void sendMessage(String type, String[] argNames, String[] args) throws IOException {
-        String msg = "type=" + type;
+        // loop through each arg name and arg and construct a formatted request string
+        String msg = Constants.MSG_PREFIX + "=" + type;
         for (int i = 0; i < argNames.length; ++i) {
-            msg += "&" + argNames[i] + "=" + args[i];
+            msg += Constants.ARG_DELIM + argNames[i] + "=" + args[i];
+        }
+        outToServer.writeBytes(msg);
+        System.out.println("\n" + msg + "\n");
+    }
+
+    /**
+     * parseEmailResponse -
+     * Helper function to parse server resposne for fetching emails. Returns an Email array.
+     * ASSUMES serverReposne is a properly formatted response for emails
+     * 
+     * @param serverResponse - Server's resposne as a string of all emails for a user
+     * @return - An array of type Email with all of a user's mail
+     */
+    private Email[] parseEmailResponse(String serverResponse) {
+        
+        // split resposne up into individual emails
+        String splitDelim[] = serverResponse.split(Constants.ARG_DELIM);
+        String plainEmails[] = splitDelim[1].split("\\|");
+        Email emails[] = new Email[plainEmails.length];
+
+        // for each email string, extract the user and body text, add to array
+        for (int i = 0; i < plainEmails.length; ++i) {
+            int fromIdx = plainEmails[i].indexOf(">");
+            int semiIdx = plainEmails[i].indexOf(";");
+            int bodyIdx = plainEmails[i].lastIndexOf(">");
+
+            Email email = new Email(plainEmails[i].substring(fromIdx+1, semiIdx), 
+                plainEmails[i].substring(bodyIdx+1));
+            emails[i] = email;
         }
 
-        // outToServer.writeBytes(msg);
+        return emails;
     }
 
     
