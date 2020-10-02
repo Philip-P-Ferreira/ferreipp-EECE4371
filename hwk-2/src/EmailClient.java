@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.*;
 
 
@@ -12,38 +13,37 @@ class EmailClient {
 
     // Array of command types for easy indexing
     public static final COMMANDS COMMAND_LIST[] = {
-        COMMANDS.RETRIEVE_MAIL,
         COMMANDS.COMPOSE_NEW_MAIL,
+        COMMANDS.RETRIEVE_MAIL,
         COMMANDS.LOG_OUT
         };
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
-        // establish a connection to the server
-
+        // create the objects for getting user input and handling requests
         Scanner console = new Scanner(System.in);
         ClientRequestHandler requestHandler = logUserIn(console);
 
+        // main session loop
         boolean session = true;
         while (session) {
+            // get command from user, do corresponding task
             switch (getUserCommand(console)) {
                 case RETRIEVE_MAIL:
                     // method to retrieve mail
+                    fetchMail(requestHandler);
                     break;
                 case COMPOSE_NEW_MAIL:
-                    // method to compose new email
-                    composeNewMail(console, curUser);
+                    // method to compose and send new email
+                    composeNewMail(console, requestHandler);
                     break;
                 case LOG_OUT:
-                    // method to log out
+                    // method for logging out and closing connections
+                    logUserOut(requestHandler);
                     session = false;
                     break;
             }
         }
-
-
-        // DC tcp connection
-
     }
 
     /**
@@ -54,15 +54,15 @@ class EmailClient {
      * @param input - Scanner that points to source of input (e.g. console)
      * @return - String of username
      */
-    public static ClientRequestHandler logUserIn(Scanner input) {
+    public static ClientRequestHandler logUserIn(Scanner input) throws IOException {
         
         System.out.print("Enter a username to login: ");
         String userName = input.nextLine();
-        // method to construct outgoing message
-        // method to send message to server
-        // listen for ack
-        System.out.println("Logged in as user '"+username +".'");
-        return new ClientRequestHandler(userName);   
+
+        ClientRequestHandler session = new ClientRequestHandler(userName);
+        System.out.println("Logged in as: "+userName);
+
+        return session;
     }
 
     /**
@@ -84,25 +84,45 @@ class EmailClient {
             System.out.println("\n1. Send Mail\n2. Read Mail\n3. Exit");
             System.out.println("Select a command (input the corresponding number)");
             
-            // get input, catch exception of non-int input
-            try {
-                commandNum = input.nextInt();
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input");
-                input.next();
-                continue;
-            } 
-
-            // check if valid command number
+            
+            commandNum = input.nextInt();
             if (commandNum < 0 || commandNum > COMMAND_LIST.length) {
                 System.out.println("Invalid number");
             } else {     
                 validInput = true;
             }
         }
+        input.nextLine(); // burn the newline character
         return COMMAND_LIST[commandNum - 1];
     }
+
+    public static void fetchMail(ClientRequestHandler handler) {
+
+        Email messages[] = handler.fetchMail();
+
+        System.out.println("Showing all messages...");
+        for (final Email mail : messages) {
+            System.out.println("\nFrom: " + mail.userField);
+            System.out.println("Body: " + mail.body);
+        }
+    }
     
-    public static void composeNewMail(Scanner input, String userName){
+    public static void composeNewMail(Scanner input, ClientRequestHandler handler){
+        String toUser, body;
+        
+        System.out.print("To: ");
+        toUser = input.nextLine();
+
+        System.out.print("Body text: ");
+        body = input.nextLine();
+
+        System.out.println("Sending email...");
+        Email msgToSend = new Email(toUser, body);
+        handler.sendMail(msgToSend);
+    }
+
+    public static void logUserOut(ClientRequestHandler handler) throws IOException {
+        System.out.println("Logging out...");
+        handler.close();
     }
 }
