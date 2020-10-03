@@ -20,7 +20,7 @@ class EmailServer {
 
         while (session) {
             if (!loggedIn) {
-                System.out.println("Waiting for cleint...");
+                System.out.println("Waiting for client...");
                 // log in a user
                 System.out.println("Client connected at " + mailServer.waitForClientConnect());
                 currentUser = extractArg(mailServer.listenForRequest(), "username"); 
