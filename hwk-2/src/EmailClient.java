@@ -84,7 +84,6 @@ class EmailClient {
             System.out.println("\n1. Send Mail\n2. Read Mail\n3. Exit");
             System.out.println("Select a command (input the corresponding number)");
             
-            
             commandNum = input.nextInt();
             if (commandNum < 0 || commandNum > COMMAND_LIST.length) {
                 System.out.println("Invalid number");
@@ -96,6 +95,13 @@ class EmailClient {
         return COMMAND_LIST[commandNum - 1];
     }
 
+    /**
+     * fetchMail -
+     * Requests the server for the mail of the current user. Prints each email out to console
+     * 
+     * @param handler - Instance of a connection to a server
+     * @throws IOException
+     */
     public static void fetchMail(ClientRequestHandler handler) throws IOException {
 
         Email messages[] = handler.fetchMail();
@@ -107,6 +113,14 @@ class EmailClient {
         }
     }
     
+    /**
+     * composeNewMail -
+     * Prompts user to input a to user field and a body text field. Delivers mail to specified user
+     * 
+     * @param input - where to read input from
+     * @param handler - instance of connection to server
+     * @throws IOException
+     */
     public static void composeNewMail(Scanner input, ClientRequestHandler handler) throws IOException{
         String toUser, body;
         
@@ -121,6 +135,13 @@ class EmailClient {
         handler.sendMail(msgToSend);
     }
 
+    /**
+     * logUserOut -
+     * Logs the current user out and closes the instance of server connection
+     * 
+     * @param handler - instance of server connection
+     * @throws IOException
+     */
     public static void logUserOut(ClientRequestHandler handler) throws IOException {
         System.out.println("Logging out...");
         handler.close();

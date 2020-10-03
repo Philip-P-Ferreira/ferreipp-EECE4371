@@ -1,4 +1,5 @@
 public class EmailUtils {
+    // constants used in server and client
     public static final String MSG_PREFIX = "type";
     public static final String ARG_DELIM = "&";
 
@@ -16,6 +17,16 @@ public class EmailUtils {
     public static final int PORT = 6789;
     public static final String SERVER_ADDRESS = "10.66.186.17";
 
+    /**
+     * constructTcpMessage - 
+     * creates a tcp messsage based on passed in string parameters
+     * ASSUME both arrays are the same length
+     * 
+     * @param type - type of command
+     * @param argNames - string array of name of arguments
+     * @param args - string array or arguments 
+     * @return -- tcp message string
+     */
     public static String constructTcpMessage(String type, String[] argNames, String[] args) {
         // loop through each arg name and arg and construct a formatted request string
         String msg = EmailUtils.MSG_PREFIX + "=" + type;

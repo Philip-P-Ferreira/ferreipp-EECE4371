@@ -1,3 +1,4 @@
+// a simple data structure for storing an email
 public class Email {
     public String userField;
     public String body;

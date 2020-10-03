@@ -122,6 +122,10 @@ public class ClientRequestHandler {
         // for each email string, extract the user and body text, add to array
         for (int i = 0; i < plainEmails.length; ++i) {
             int fromIdx = plainEmails[i].indexOf(">");
+            if (fromIdx == -1) {
+                Email tmp[] = {};
+                return tmp;
+            }
             int semiIdx = plainEmails[i].indexOf(";");
             int bodyIdx = plainEmails[i].lastIndexOf(">");
 
