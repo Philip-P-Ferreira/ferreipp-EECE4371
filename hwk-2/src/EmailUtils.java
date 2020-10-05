@@ -2,6 +2,7 @@ public class EmailUtils {
     // constants used in server and client
     public static final String MSG_PREFIX = "type";
     public static final String ARG_DELIM = "&";
+    public static final String OK_STATUS = "status: ok";
 
     public static final String LOG_IN = "log_in";
     public static final String LOG_IN_ACK = "log_in_ack";
@@ -15,9 +16,9 @@ public class EmailUtils {
     public static final String SEND_EMAIL_ACK = "send_email_ack";
 
     public static final int PORT = 6789;
-    public static final String SERVER_ADDRESS = "13.59.192.42";
+    public static final String SERVER_ADDRESS = "10.66.186.17";
     // 13.59.192.42 for amazon
-    // 10.66.186.17 for this laptop
+    // 10.66.186.17 for my laptop
 
     /**
      * constructTcpMessage - 
@@ -36,5 +37,21 @@ public class EmailUtils {
             msg += EmailUtils.ARG_DELIM + argNames[i] + "=" + args[i];
         }
         return msg + '\n';
+    }
+
+    // overloaded versions for simplifying code
+    public static String constructTcpMessage(String type) {
+        String[] tmp = {};
+        return constructTcpMessage(type, tmp, tmp);
+    }
+
+    public static String constructTcpMessage(String type, String argName, String arg) {
+        String argNameArr[] = {argName}, argArr[] = {arg};
+        return constructTcpMessage(type,argNameArr,argArr);
+    }
+
+    // alternate version for no arg name just one arg (like for ok statuses)
+    public static String constructTcpMessage(String type, String arg) {
+        return "type=" + type + ARG_DELIM + arg + '\n';
     }
 }

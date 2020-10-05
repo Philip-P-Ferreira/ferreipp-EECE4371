@@ -39,10 +39,8 @@ public class ClientRequestHandler {
      * @throws IOException
      */
     public void login() throws IOException {
-        String argName[] = {"username"};
-        String arg[] = {user};
-
-        sendMessage(EmailUtils.LOG_IN, argName, arg);
+        
+        sendMessage(EmailUtils.LOG_IN, "username", user);
         readFromServer.readLine();
     }
 
@@ -54,9 +52,8 @@ public class ClientRequestHandler {
      * @throws IOException
      */
     public Email[] fetchMail() throws IOException {
-
-        String tmp[] = {};
-        sendMessage(EmailUtils.RETRIEVE_EMAILS, tmp, tmp);
+        
+        sendMessage(EmailUtils.RETRIEVE_EMAILS);
         return parseEmailResponse(readFromServer.readLine());
     }
 
@@ -83,8 +80,7 @@ public class ClientRequestHandler {
      */
     public void close() throws IOException {
 
-        String tmp[] = {};
-        sendMessage(EmailUtils.LOG_OUT, tmp, tmp);
+        sendMessage(EmailUtils.LOG_OUT);
         readFromServer.readLine(); // listend to response
 
         socket.close(); // be a good client and close it out
@@ -103,6 +99,16 @@ public class ClientRequestHandler {
     private void sendMessage(String type, String[] argNames, String[] args) throws IOException {
         outToServer.writeBytes(EmailUtils.constructTcpMessage(type, argNames, args));
     }
+
+    // overloaded versions for simplicity
+    private void sendMessage(String type, String argName, String arg) throws IOException {
+        outToServer.writeBytes(EmailUtils.constructTcpMessage(type, argName, arg));
+    }
+
+    private void sendMessage(String type) throws IOException {
+        outToServer.writeBytes(EmailUtils.constructTcpMessage(type));
+    }
+
 
     /**
      * parseEmailResponse -
@@ -123,6 +129,7 @@ public class ClientRequestHandler {
         for (int i = 0; i < plainEmails.length; ++i) {
             int fromIdx = plainEmails[i].indexOf(">");
             if (fromIdx == -1) {
+                // if no emails, return an empty array
                 Email tmp[] = {};
                 return tmp;
             }

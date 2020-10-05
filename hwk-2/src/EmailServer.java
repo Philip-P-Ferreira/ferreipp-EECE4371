@@ -16,7 +16,6 @@ class EmailServer {
         boolean loggedIn = false;
 
         // any empty string array for later use
-        String tmp[] = {};
 
         while (session) {
             if (!loggedIn) {
@@ -27,7 +26,7 @@ class EmailServer {
                 System.out.println("Logging in as user: " + currentUser);
 
                 // respond to client
-                mailServer.sendResponse(EmailUtils.constructTcpMessage(EmailUtils.LOG_IN_ACK, tmp, tmp));
+                mailServer.sendResponse(EmailUtils.constructTcpMessage(EmailUtils.LOG_IN_ACK, EmailUtils.OK_STATUS));
                 loggedIn = true;
             } else {
 
@@ -38,7 +37,7 @@ class EmailServer {
                 switch (extractCommand(request)) {
                     case EmailUtils.SEND_EMAIL:
                         sendEmail(request, currentUser, emailStorage);
-                        mailServer.sendResponse(EmailUtils.constructTcpMessage(EmailUtils.SEND_EMAIL_ACK, tmp, tmp));
+                        mailServer.sendResponse(EmailUtils.constructTcpMessage(EmailUtils.SEND_EMAIL_ACK, EmailUtils.OK_STATUS));
                         System.out.println("Email sent");
                         break;
                     case EmailUtils.RETRIEVE_EMAILS:
@@ -46,7 +45,7 @@ class EmailServer {
                         System.out.println("Emails fetched");    
                         break;
                     case EmailUtils.LOG_OUT:
-                        mailServer.sendResponse(EmailUtils.constructTcpMessage(EmailUtils.LOG_OUT_ACK, tmp, tmp));
+                        mailServer.sendResponse(EmailUtils.constructTcpMessage(EmailUtils.LOG_OUT_ACK, EmailUtils.OK_STATUS));
                         currentUser = "";
                         loggedIn = false;
                         System.out.println("logged out");
@@ -120,8 +119,7 @@ class EmailServer {
      */
     public static String fetchEmails(String request, String user, HashMap<String, ArrayList<Email>> emails) {
         ArrayList<Email> userMsgs;
-        String argName[] = {"emails"};
-        String arg[] = {""};
+        String arg = "";
 
         // consturct string if user has a mailbox
         if (emails.containsKey(user)) {
@@ -130,9 +128,9 @@ class EmailServer {
             for (final Email msg : userMsgs) {
                 partialResponse += "from>" + msg.userField + ";body>" + msg.body + "|";
             }
-            arg[0] = partialResponse.substring(0,partialResponse.length()-1); // gets rid of the extra pipe
+            arg = partialResponse.substring(0,partialResponse.length()-1); // gets rid of the extra pipe
             
         }
-        return EmailUtils.constructTcpMessage(EmailUtils.EMAILS, argName, arg);
+        return EmailUtils.constructTcpMessage(EmailUtils.EMAILS, "emails", arg);
     }
 }
