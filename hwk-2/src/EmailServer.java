@@ -32,7 +32,7 @@ class EmailServer {
 
                 // listen for a command
                 String request = mailServer.listenForRequest();
-                System.out.println(request);
+                System.out.println("\nRequest: " + extractCommand(request));
 
                 switch (extractCommand(request)) {
                     case EmailUtils.SEND_EMAIL:
