@@ -17,9 +17,7 @@ public class EmailUtils {
     public static final String SEND_EMAIL_ACK = "send_email_ack";
 
     public static final int PORT = 6789;
-    public static final String SERVER_ADDRESS = "10.66.223.142";
-    // 13.59.192.42 for amazon
-    // 10.66.223.142 for my laptop
+    public static final String SERVER_ADDRESS = "18.188.253.19";
 
     /**
      * constructTcpMessage - 
