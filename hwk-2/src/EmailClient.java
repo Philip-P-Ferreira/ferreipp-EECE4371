@@ -105,11 +105,14 @@ class EmailClient {
     public static void fetchMail(ClientRequestHandler handler) throws IOException {
 
         Email messages[] = handler.fetchMail();
-
-        System.out.println("Showing all messages...");
-        for (final Email mail : messages) {
-            System.out.println("\nFrom: " + mail.userField);
-            System.out.println("Body: " + mail.body);
+        if (messages.length == 0) {
+            System.out.println("Inbox is empty");
+        } else {
+            System.out.println("Showing all messages...");
+            for (final Email mail : messages) {
+                System.out.println("\nFrom: " + mail.from);
+                System.out.println("Body: " + mail.body);
+            }
         }
     }
     
@@ -131,7 +134,7 @@ class EmailClient {
         body = input.nextLine();
 
         System.out.println("Sending email...");
-        Email msgToSend = new Email(toUser, body);
+        Email msgToSend = new Email(toUser, handler.getCurrentUser(), body);
         handler.sendMail(msgToSend);
     }
 

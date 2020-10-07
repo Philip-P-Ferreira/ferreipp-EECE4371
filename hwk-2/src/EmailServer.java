@@ -23,7 +23,7 @@ class EmailServer {
                 // log in a user
                 System.out.println("Client connected at " + mailServer.waitForClientConnect());
                 currentUser = extractArg(mailServer.listenForRequest(), "username"); 
-                System.out.println("Logging in as user: " + currentUser);
+                System.out.println("\nLogging in as user: " + currentUser);
 
                 // respond to client
                 mailServer.sendResponse(EmailUtils.constructTcpMessage(EmailUtils.LOG_IN_ACK, EmailUtils.OK_STATUS));
@@ -32,11 +32,11 @@ class EmailServer {
 
                 // listen for a command
                 String request = mailServer.listenForRequest();
-                System.out.println("Request: " + extractCommand(request));
+                System.out.println("\nRequest: " + extractCommand(request));
 
                 switch (extractCommand(request)) {
                     case EmailUtils.SEND_EMAIL:
-                        sendEmail(request, currentUser, emailStorage);
+                        sendEmail(request, emailStorage);
                         mailServer.sendResponse(EmailUtils.constructTcpMessage(EmailUtils.SEND_EMAIL_ACK, EmailUtils.OK_STATUS));
                         System.out.println("Email sent");
                         break;
@@ -48,7 +48,7 @@ class EmailServer {
                         mailServer.sendResponse(EmailUtils.constructTcpMessage(EmailUtils.LOG_OUT_ACK, EmailUtils.OK_STATUS));
                         currentUser = "";
                         loggedIn = false;
-                        System.out.println("logged out");
+                        System.out.println("logged out\n");
                         break;
                 }
             }
@@ -94,11 +94,11 @@ class EmailServer {
      * @param user - name of user that fills "from" field
      * @param emails - where all emails are stored
      */
-    public static void sendEmail(String request, String user, HashMap<String, ArrayList<Email>> emails) {
+    public static void sendEmail(String request, HashMap<String, ArrayList<Email>> emails) {
         String toUser = extractArg(request, "to");
 
         // adds to user mailbox, or creates a new inbox if necessary
-        Email emailToInstert = new Email(user, extractArg(request, "body"));
+        Email emailToInstert = new Email(toUser, extractArg(request, "from"), extractArg(request, "body"));
         if (emails.containsKey(toUser)){
             emails.get(toUser).add(emailToInstert);
         } else {
@@ -119,18 +119,19 @@ class EmailServer {
      */
     public static String fetchEmails(String request, String user, HashMap<String, ArrayList<Email>> emails) {
         ArrayList<Email> userMsgs;
-        String arg = "";
+        String arg = EmailUtils.EMAIL_DELIM;
 
         // consturct string if user has a mailbox
         if (emails.containsKey(user)) {
             userMsgs = emails.get(user);
-            String partialResponse = "";
+            String partialRequest = "";
+
             for (final Email msg : userMsgs) {
-                partialResponse += "from>" + msg.userField + ";body>" + msg.body + "|";
+                partialRequest += msg.toString() + EmailUtils.EMAIL_DELIM;
             }
-            arg = partialResponse.substring(0,partialResponse.length()-1); // gets rid of the extra pipe
-            
+            arg = partialRequest.substring(0,partialRequest.length()-EmailUtils.EMAIL_DELIM.length()); // get rid of extra delim at end
         }
+
         return EmailUtils.constructTcpMessage(EmailUtils.EMAILS, "emails", arg);
     }
 }

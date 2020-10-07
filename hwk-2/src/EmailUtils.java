@@ -3,6 +3,7 @@ public class EmailUtils {
     public static final String MSG_PREFIX = "type";
     public static final String ARG_DELIM = "&";
     public static final String OK_STATUS = "status: ok";
+    public static final String EMAIL_DELIM = "ZZZ";
 
     public static final String LOG_IN = "log_in";
     public static final String LOG_IN_ACK = "log_in_ack";
@@ -16,9 +17,9 @@ public class EmailUtils {
     public static final String SEND_EMAIL_ACK = "send_email_ack";
 
     public static final int PORT = 6789;
-    public static final String SERVER_ADDRESS = "10.66.186.17";
+    public static final String SERVER_ADDRESS = "10.66.223.142";
     // 13.59.192.42 for amazon
-    // 10.66.186.17 for my laptop
+    // 10.66.223.142 for my laptop
 
     /**
      * constructTcpMessage - 

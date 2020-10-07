@@ -66,8 +66,8 @@ public class ClientRequestHandler {
      */
     public void sendMail(Email mail) throws IOException{
         
-        String argNames[] = {"to", "body"};
-        String args[] = {mail.userField, mail.body};
+        String argNames[] = {"to", "from", "body"};
+        String args[] = {mail.to, mail.from, mail.body};
 
         sendMessage(EmailUtils.SEND_EMAIL, argNames, args);
         readFromServer.readLine(); // listen for response
@@ -84,6 +84,10 @@ public class ClientRequestHandler {
         readFromServer.readLine(); // listend to response
 
         socket.close(); // be a good client and close it out
+    }
+
+    public String getCurrentUser() {
+        return user;
     }
 
     /**
@@ -120,29 +124,23 @@ public class ClientRequestHandler {
      */
     private Email[] parseEmailResponse(String serverResponse) {
         
-        // split resposne up into individual emails
-        String splitDelim[] = serverResponse.split(EmailUtils.ARG_DELIM);
-        String plainEmails[] = splitDelim[1].split("\\|");
-        Email emails[] = new Email[plainEmails.length];
+        // create a var to hold email array, get emails from server response
+        Email emailList[] = {};
+        String emails = serverResponse.substring(serverResponse.lastIndexOf("=")+1);
 
-        // for each email string, extract the user and body text, add to array
-        for (int i = 0; i < plainEmails.length; ++i) {
-            int fromIdx = plainEmails[i].indexOf(">");
-            if (fromIdx == -1) {
-                // if no emails, return an empty array
-                Email tmp[] = {};
-                return tmp;
+        // if the emails aren't the emtpy inbox (ZZZ in this case)
+        if (!emails.equals(EmailUtils.EMAIL_DELIM)) {
+
+            // split by the delimiter
+            String plainEmails[] = emails.split(EmailUtils.EMAIL_DELIM);
+            emailList = new Email[plainEmails.length];
+
+            // parse out the email, add to array
+            for (int i = 0; i < plainEmails.length; ++i) {
+                emailList[i] = Email.stringToEmail(plainEmails[i]);
             }
-            int semiIdx = plainEmails[i].indexOf(";");
-            int bodyIdx = plainEmails[i].lastIndexOf(">");
-
-            Email email = new Email(plainEmails[i].substring(fromIdx+1, semiIdx), 
-                plainEmails[i].substring(bodyIdx+1));
-            emails[i] = email;
         }
-
-        return emails;
+        
+        return emailList;
     }
-
-    
 }
