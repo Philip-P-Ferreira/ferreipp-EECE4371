@@ -66,10 +66,8 @@ public class ClientRequestHandler {
      */
     public void sendMail(Email mail) throws IOException{
         
-        String argNames[] = {"to", "from", "body"};
-        String args[] = {mail.to, mail.from, mail.body};
 
-        sendMessage(EmailUtils.SEND_EMAIL, argNames, args);
+        sendMessage(EmailUtils.SEND_EMAIL, "email", mail.toString());
         readFromServer.readLine(); // listen for response
     }
 
