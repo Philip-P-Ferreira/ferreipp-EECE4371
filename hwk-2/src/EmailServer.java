@@ -94,10 +94,10 @@ class EmailServer {
      * @param user - name of user that fills "from" field
      * @param emails - where all emails are stored
      */
-    public static void sendEmail(String request, HashMap<String, ArrayList<Email>> emails) 
+    public static void sendEmail(String request, HashMap<String, ArrayList<Email>> emails) {
         // adds to user mailbox, or creates a new inbox if necessary
         Email emailToInstert = Email.stringToEmail(extractArg(request, "email");
-        if (emails.containsKey(toUser)){
+        if (emails.containsKey(emailToInstert.to)){
             emails.get(emailToInstert.to).add(emailToInstert);
         } else {
             ArrayList<Email> newList = new ArrayList<Email>();
