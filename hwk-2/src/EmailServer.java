@@ -96,7 +96,7 @@ class EmailServer {
      */
     public static void sendEmail(String request, HashMap<String, ArrayList<Email>> emails) {
         // adds to user mailbox, or creates a new inbox if necessary
-        Email emailToInstert = Email.stringToEmail(extractArg(request, "email");
+        Email emailToInstert = Email.stringToEmail(extractArg(request, "email"));
         if (emails.containsKey(emailToInstert.to)){
             emails.get(emailToInstert.to).add(emailToInstert);
         } else {
