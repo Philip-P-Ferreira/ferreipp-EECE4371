@@ -127,15 +127,16 @@ public class ClientRequestHandler {
         Email emailList[] = {};
         HashMap<String,String> argMap = EmailUtils.getPairMap(serverResponse);
         
+        // if empty inbox, return empty array
         String allEmails = argMap.get(EmailUtils.EMAIL_LIST_KEY);
         if (allEmails.equals(EmailUtils.EMAIL_DELIM)) {
             return emailList;
         }
 
-        
         String splitEmails[] = allEmails.split(EmailUtils.EMAIL_DELIM);
         emailList = new Email[splitEmails.length];
 
+        // for each email, de-serialize
         for (int i = 0; i < splitEmails.length; ++i) {
             emailList[i] = new Email(splitEmails[i]);
         }

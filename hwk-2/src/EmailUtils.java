@@ -26,7 +26,7 @@ public class EmailUtils {
     public static final String SEND_EMAIL_ACK = "send_email_ack";
 
     public static final int PORT = 6789;
-    public static final String SERVER_ADDRESS = "18.188.253.19";
+    public static final String SERVER_ADDRESS = "10.66.223.142";
 
     /**
      * constructTcpMessage - 
