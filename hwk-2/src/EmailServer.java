@@ -5,7 +5,7 @@ class EmailServer {
     public static void main(String[] args) throws IOException {
         // start up the tcp server
         ServerHandler serverHandler = new ServerHandler(EmailUtils.PORT);
-        System.out.println("Starting up server...");
+        System.out.println("\nStarting up server...");
 
         boolean session = true;
         while (session) {
@@ -28,7 +28,7 @@ class EmailServer {
             } else {
                 // listen for a command
                 requestMap = EmailUtils.getPairMap(serverHandler.listenForRequest());
-                System.out.println("Reqeust: " + requestMap.get(EmailUtils.COMMAND_KEY));
+                System.out.println("\nReqeust: " + requestMap.get(EmailUtils.COMMAND_KEY));
 
                 switch (requestMap.get(EmailUtils.COMMAND_KEY)) {
                     case EmailUtils.SEND_EMAIL:
