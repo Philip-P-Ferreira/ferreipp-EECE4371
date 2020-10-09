@@ -11,13 +11,6 @@ class EmailClient {
         LOG_OUT,
     }
 
-    // Array of command types for easy indexing
-    public static final COMMANDS COMMAND_LIST[] = {
-        COMMANDS.COMPOSE_NEW_MAIL,
-        COMMANDS.RETRIEVE_MAIL,
-        COMMANDS.LOG_OUT
-        };
-
     public static void main(String[] args) throws IOException {
 
         // create the objects for getting user input and handling requests
@@ -60,7 +53,7 @@ class EmailClient {
         String userName = input.nextLine();
 
         ClientRequestHandler session = new ClientRequestHandler(userName);
-        System.out.println("Logged in as: "+userName);
+        System.out.println("Logged in as: "+ session.getCurrentUser());
 
         return session;
     }
@@ -77,6 +70,13 @@ class EmailClient {
 
         int commandNum = -1;
         boolean validInput = false;
+
+        // for easy indexing and returning
+        COMMANDS COMMAND_LIST[] = {
+            COMMANDS.COMPOSE_NEW_MAIL,
+            COMMANDS.RETRIEVE_MAIL,
+            COMMANDS.LOG_OUT
+            };
 
         // loop as long as input isn't valid
         while(!validInput) {
@@ -111,7 +111,7 @@ class EmailClient {
             System.out.println("Showing all messages...");
             for (final Email mail : messages) {
                 System.out.println("\nFrom: " + mail.from);
-                System.out.println("Body: " + mail.body);
+                System.out.println(mail.body);
             }
         }
     }

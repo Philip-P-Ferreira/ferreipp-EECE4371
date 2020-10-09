@@ -1,19 +1,27 @@
+import java.util.HashMap;
+
 public class EmailUtils {
     // constants used in server and client
-    public static final String MSG_PREFIX = "type";
-    public static final String ARG_DELIM = "&";
+    public static final String COMMAND_KEY = "type";
+    public static final String PAIR_DELIM = "&";
     public static final String OK_STATUS = "status: ok";
     public static final String EMAIL_DELIM = "ZZZ";
+    public static final String PAIR_SEPARATOR = "=";
 
     public static final String LOG_IN = "log_in";
     public static final String LOG_IN_ACK = "log_in_ack";
+    public static final String USERNAME_KEY = "username";
     public static final String LOG_OUT = "log_out";
     public static final String LOG_OUT_ACK = "log_out_ack";
+    
 
     public static final String RETRIEVE_EMAILS = "retrieve_emails";
-    public static final String EMAILS = "emails";
+    public static final String RETRIEVE_RESPONSE = "emails";
+    public static final String EMAIL_LIST_KEY = "emails";
+
 
     public static final String SEND_EMAIL = "send_email";
+    public static final String EMAIL_KEY = "email";
     public static final String SEND_EMAIL_ACK = "send_email_ack";
 
     public static final int PORT = 6789;
@@ -21,36 +29,70 @@ public class EmailUtils {
 
     /**
      * constructTcpMessage - 
-     * creates a tcp messsage based on passed in string parameters
-     * ASSUME both arrays are the same length
+     * constructs a simple one pair tcp message
      * 
-     * @param type - type of command
-     * @param argNames - string array of name of arguments
-     * @param args - string array or arguments 
-     * @return -- tcp message string
+     * @param type - type value for key-value pair
+     * @return - tcp String message
      */
-    public static String constructTcpMessage(String type, String[] argNames, String[] args) {
-        // loop through each arg name and arg and construct a formatted request string
-        String msg = EmailUtils.MSG_PREFIX + "=" + type;
-        for (int i = 0; i < argNames.length; ++i) {
-            msg += EmailUtils.ARG_DELIM + argNames[i] + "=" + args[i];
-        }
-        return msg + '\n';
-    }
-
-    // overloaded versions for simplifying code
     public static String constructTcpMessage(String type) {
-        String[] tmp = {};
-        return constructTcpMessage(type, tmp, tmp);
+        return COMMAND_KEY + PAIR_SEPARATOR + type + '\n';
     }
 
+    /**
+     * constructTcpMessage - 
+     * constructs a tcp message with two key value pairs
+     * 
+     * @param type - value for type key
+     * @param argName - key for second argument
+     * @param arg - value for second argument
+     * @return - tcp String message
+     */
     public static String constructTcpMessage(String type, String argName, String arg) {
-        String argNameArr[] = {argName}, argArr[] = {arg};
-        return constructTcpMessage(type,argNameArr,argArr);
+        return COMMAND_KEY + PAIR_SEPARATOR + type + PAIR_DELIM + 
+                    argName + PAIR_SEPARATOR + arg + '\n';
     }
 
-    // alternate version for no arg name just one arg (like for ok statuses)
+    /**
+     * constructTcpMessage -
+     * Constructs a tcp message with a pair and a single value (like for ack messages)
+     * 
+     * @param type - type value
+     * @param arg - unpaired value
+     * @return - tcp String message
+     */
     public static String constructTcpMessage(String type, String arg) {
-        return "type=" + type + ARG_DELIM + arg + '\n';
+        return "type" + PAIR_SEPARATOR + type + PAIR_DELIM + arg + '\n';
+    }
+
+    /**
+     * getPairMap - 
+     * Returns a key-value map of the string, where pairs are separated my delimiters, and split by separator
+     * 
+     * @param str - string to split
+     * @param delimiter - breaks up pairs
+     * @param separator - breaks up key and value
+     * @return - Map of type <String,String>
+     */
+    public static HashMap<String,String> getPairMap(String str, String delimiter, String separator) {
+        String argArr[] = str.split(delimiter);
+        HashMap<String,String> argMap = new HashMap<>();
+
+        for (final String arg: argArr) {
+            int sepIndex = arg.indexOf(separator);
+            argMap.put(arg.substring(0, sepIndex), arg.substring(sepIndex +1));
+        }
+
+        return argMap;
+    }
+
+    /**
+     * getPairMap - 
+     * Specific version for tcp messages. Most often used in this way.
+     * 
+     * @param tcpMessage - a formatted tcp message
+     * @return - Map of type <String,String>
+     */
+    public static HashMap<String,String> getPairMap(String tcpMessage) {
+        return getPairMap(tcpMessage, PAIR_DELIM, PAIR_SEPARATOR);
     }
 }

@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.HashMap;
 
 /**
  * ClientRequestHandler - 
@@ -40,7 +41,7 @@ public class ClientRequestHandler {
      */
     public void login() throws IOException {
         
-        sendMessage(EmailUtils.LOG_IN, "username", user);
+        sendMessage(EmailUtils.LOG_IN, EmailUtils.USERNAME_KEY, user);
         readFromServer.readLine();
     }
 
@@ -67,7 +68,7 @@ public class ClientRequestHandler {
     public void sendMail(Email mail) throws IOException{
         
 
-        sendMessage(EmailUtils.SEND_EMAIL, "email", mail.toString());
+        sendMessage(EmailUtils.SEND_EMAIL, EmailUtils.EMAIL_KEY, mail.toString());
         readFromServer.readLine(); // listen for response
     }
 
@@ -89,28 +90,29 @@ public class ClientRequestHandler {
     }
 
     /**
-     * sendMessage -
-     * Helper function for sending a request message to the server
-     * ASSUMES argName and args are of same length
+     * sendMessage - 
+     * accepts a command type, an argname, and the actual argument, and send a formatted
+     * tcp request to the server
      * 
-     * @param type - name of request, string
-     * @param argNames - String array of all of the argument names
-     * @param args - String array of all of the arguments
+     * @param type - type of command
+     * @param argName - name of argument
+     * @param arg - actual argument
      * @throws IOException
      */
-    private void sendMessage(String type, String[] argNames, String[] args) throws IOException {
-        outToServer.writeBytes(EmailUtils.constructTcpMessage(type, argNames, args));
-    }
-
-    // overloaded versions for simplicity
     private void sendMessage(String type, String argName, String arg) throws IOException {
         outToServer.writeBytes(EmailUtils.constructTcpMessage(type, argName, arg));
     }
 
+    /**
+     * sendMessage - 
+     * overloaded method for sending just a command with no arguments
+     * 
+     * @param type - type of command
+     * @throws IOException
+     */
     private void sendMessage(String type) throws IOException {
         outToServer.writeBytes(EmailUtils.constructTcpMessage(type));
     }
-
 
     /**
      * parseEmailResponse -
@@ -122,23 +124,19 @@ public class ClientRequestHandler {
      */
     private Email[] parseEmailResponse(String serverResponse) {
         
-        // create a var to hold email array, get emails from server response
         Email emailList[] = {};
-        String emails = serverResponse.substring(serverResponse.lastIndexOf("=")+1);
-
-        // if the emails aren't the emtpy inbox (ZZZ in this case)
-        if (!emails.equals(EmailUtils.EMAIL_DELIM)) {
-
-            // split by the delimiter
-            String plainEmails[] = emails.split(EmailUtils.EMAIL_DELIM);
-            emailList = new Email[plainEmails.length];
-
-            // parse out the email, add to array
-            for (int i = 0; i < plainEmails.length; ++i) {
-                emailList[i] = Email.stringToEmail(plainEmails[i]);
-            }
-        }
+        HashMap<String,String> argMap = EmailUtils.getPairMap(serverResponse);
         
+        String allEmails = argMap.get(EmailUtils.EMAIL_LIST_KEY);
+        if (allEmails.equals(EmailUtils.PAIR_DELIM)) {
+            return emailList;
+        }
+
+        String splitEmails[] = allEmails.split(EmailUtils.PAIR_DELIM);
+        for (int i = 0; i < splitEmails.length; ++i) {
+            emailList[i] = new Email(splitEmails[i]);
+        }
+
         return emailList;
     }
 }
