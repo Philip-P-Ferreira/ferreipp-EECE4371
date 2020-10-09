@@ -80,7 +80,7 @@ public class ClientRequestHandler {
     public void close() throws IOException {
 
         sendMessage(EmailUtils.LOG_OUT);
-        readFromServer.readLine(); // listend to response
+        readFromServer.readLine(); // listen to response
 
         socket.close(); // be a good client and close it out
     }
@@ -128,11 +128,14 @@ public class ClientRequestHandler {
         HashMap<String,String> argMap = EmailUtils.getPairMap(serverResponse);
         
         String allEmails = argMap.get(EmailUtils.EMAIL_LIST_KEY);
-        if (allEmails.equals(EmailUtils.PAIR_DELIM)) {
+        if (allEmails.equals(EmailUtils.EMAIL_DELIM)) {
             return emailList;
         }
 
-        String splitEmails[] = allEmails.split(EmailUtils.PAIR_DELIM);
+        
+        String splitEmails[] = allEmails.split(EmailUtils.EMAIL_DELIM);
+        emailList = new Email[splitEmails.length];
+
         for (int i = 0; i < splitEmails.length; ++i) {
             emailList[i] = new Email(splitEmails[i]);
         }

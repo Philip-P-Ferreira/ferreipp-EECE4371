@@ -1,5 +1,6 @@
 #!/bin/bash
 
+./build_script
 cd bin
 java EmailClient
 cd ..

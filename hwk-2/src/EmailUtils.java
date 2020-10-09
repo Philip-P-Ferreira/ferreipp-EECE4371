@@ -1,6 +1,7 @@
 import java.util.HashMap;
 
 public class EmailUtils {
+
     // constants used in server and client
     public static final String COMMAND_KEY = "type";
     public static final String PAIR_DELIM = "&";
@@ -25,7 +26,7 @@ public class EmailUtils {
     public static final String SEND_EMAIL_ACK = "send_email_ack";
 
     public static final int PORT = 6789;
-    public static final String SERVER_ADDRESS = "10.66.56.222";
+    public static final String SERVER_ADDRESS = "18.188.253.19";
 
     /**
      * constructTcpMessage - 
