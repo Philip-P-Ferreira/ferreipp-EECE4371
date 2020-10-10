@@ -1,6 +1,3 @@
-import java.util.*;
-
-// a simple data structure for storing an email
 public class Email {
 
   // member variables
@@ -36,8 +33,8 @@ public class Email {
    * @param serializedEmail - a serialized email
    */
   public Email(String serializedEmail) {
-    HashMap<String, String> fieldMap =
-        EmailUtils.getPairMap(serializedEmail, FIELD_DELIM, FIELD_SEPARATOR);
+    ProtocolMap fieldMap =
+        new ProtocolMap(serializedEmail, FIELD_DELIM, FIELD_SEPARATOR);
     to = fieldMap.get(TO_FIELD);
     from = fieldMap.get(FROM_FIELD);
     body = fieldMap.get(BODY_FIELD);

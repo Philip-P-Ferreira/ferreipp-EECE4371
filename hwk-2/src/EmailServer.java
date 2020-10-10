@@ -1,8 +1,6 @@
-import java.io.IOException;
-import java.util.*;
+import java.io.*;
 
 class EmailServer {
-
   public static void main(String[] args) throws IOException {
 
     System.out.println("\nStarting up server...");
@@ -21,12 +19,11 @@ class EmailServer {
                          handler.waitForClientConnect());
 
       // map to hold our request
-      HashMap<String, String> requestMap = new HashMap<>();
+      ProtocolMap requestMap = new ProtocolMap();
 
-      // while there is a client
       while (handler.isClientConnected()) {
         // get user request, turn into request map
-        requestMap = EmailUtils.getPairMap(handler.listenForRequest());
+        requestMap.generate(handler.listenForRequest());
         String requestType = requestMap.get(EmailUtils.COMMAND_KEY);
         System.out.println("\nRequest: " + requestType);
 

@@ -1,5 +1,3 @@
-import java.util.HashMap;
-
 public class EmailUtils {
 
   // constants used in server and client
@@ -63,39 +61,5 @@ public class EmailUtils {
    */
   public static String constructTcpMessage(String type, String arg) {
     return "type" + PAIR_SEPARATOR + type + PAIR_DELIM + arg + '\n';
-  }
-
-  /**
-   * getPairMap -
-   * Returns a key-value map of the string, where pairs are separated my
-   * delimiters, and split by separator
-   *
-   * @param str - string to split
-   * @param delimiter - breaks up pairs
-   * @param separator - breaks up key and value
-   * @return - Map of type <String,String>
-   */
-  public static HashMap<String, String> getPairMap(String str, String delimiter,
-                                                   String separator) {
-    String argArr[] = str.split(delimiter);
-    HashMap<String, String> argMap = new HashMap<>();
-
-    for (final String arg : argArr) {
-      int sepIndex = arg.indexOf(separator);
-      argMap.put(arg.substring(0, sepIndex), arg.substring(sepIndex + 1));
-    }
-
-    return argMap;
-  }
-
-  /**
-   * getPairMap -
-   * Specific version for tcp messages. Most often used in this way.
-   *
-   * @param tcpMessage - a formatted tcp message
-   * @return - Map of type <String,String>
-   */
-  public static HashMap<String, String> getPairMap(String tcpMessage) {
-    return getPairMap(tcpMessage, PAIR_DELIM, PAIR_SEPARATOR);
   }
 }

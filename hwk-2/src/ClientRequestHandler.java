@@ -1,6 +1,5 @@
 import java.io.*;
 import java.net.*;
-import java.util.HashMap;
 
 /**
  * ClientRequestHandler -
@@ -128,7 +127,7 @@ public class ClientRequestHandler {
   private Email[] parseEmailResponse(String serverResponse) {
 
     Email emailList[] = {};
-    HashMap<String, String> argMap = EmailUtils.getPairMap(serverResponse);
+    ProtocolMap argMap = new ProtocolMap(serverResponse);
 
     // if empty inbox, return empty array
     String allEmails = argMap.get(EmailUtils.EMAIL_LIST_KEY);
