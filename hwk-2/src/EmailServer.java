@@ -2,49 +2,56 @@ import java.io.IOException;
 import java.util.*;
 
 class EmailServer {
+
   public static void main(String[] args) throws IOException {
-    // start up the tcp server
-    ServerHandler serverHandler = new ServerHandler(EmailUtils.PORT);
+
     System.out.println("\nStarting up server...");
 
-    boolean session = true;
-    while (session) {
-      // map to hold our incoming request as a map
-      HashMap<String, String> requestMap;
+    // handler to handle reading and writing messages
+    // storage to store emails
+    ServerHandler handler = new ServerHandler(EmailUtils.PORT);
+    EmailStorage emailStorage = new EmailStorage();
 
-      if (!serverHandler.isLoggedIn()) {
-        // connect to client
-        System.out.println("Waiting for client...");
-        System.out.println("Client connected at " +
-                           serverHandler.waitForClientConnect());
+    // main loop
+    boolean serverIsOn = true;
+    while (serverIsOn) {
+      // waits for client to connect
+      System.out.println("Waiting for client...");
+      System.out.println("Client connected at " +
+                         handler.waitForClientConnect());
 
-        // extract the username
-        requestMap = EmailUtils.getPairMap(serverHandler.listenForRequest());
-        String user = requestMap.get(EmailUtils.USERNAME_KEY);
+      // map to hold our request
+      HashMap<String, String> requestMap = new HashMap<>();
 
-        // login as user
-        System.out.println("\nLogging in as user: " + user);
-        serverHandler.login(user);
+      // while there is a client
+      while (handler.isClientConnected()) {
+        // get user request, turn into request map
+        requestMap = EmailUtils.getPairMap(handler.listenForRequest());
+        String requestType = requestMap.get(EmailUtils.COMMAND_KEY);
+        System.out.println("\nRequest: " + requestType);
 
-      } else {
-        // listen for a command
-        requestMap = EmailUtils.getPairMap(serverHandler.listenForRequest());
-        System.out.println("\nReqeust: " +
-                           requestMap.get(EmailUtils.COMMAND_KEY));
-
-        switch (requestMap.get(EmailUtils.COMMAND_KEY)) {
-        case EmailUtils.SEND_EMAIL:
-          serverHandler.addEmail(requestMap.get(EmailUtils.EMAIL_KEY));
-          System.out.println("Email sent");
+        // handle based on reqeust type
+        switch (requestType) {
+        case EmailUtils.LOG_IN:
+          handler.logUserIn(requestMap.get(EmailUtils.USERNAME_KEY));
+          System.out.println("Logged in as user: " + handler.getCurrentUser());
           break;
+
+        case EmailUtils.SEND_EMAIL:
+          emailStorage.addEmail(requestMap.get(EmailUtils.EMAIL_KEY));
+          handler.sendAck(EmailUtils.SEND_EMAIL_ACK);
+          System.out.println("Email Sent");
+          break;
+
         case EmailUtils.RETRIEVE_EMAILS:
-          serverHandler.fetchEmails();
+          handler.returnFetchedEmails(emailStorage);
           System.out.println("Emails fetched");
           break;
-        case EmailUtils.LOG_OUT:
-          serverHandler.logout();
-          System.out.println("logged out\n");
-          break;
+
+        case EmailUtils.LOG_OUT: {
+          handler.logUserOut();
+          System.out.println("Logged out\n");
+        }
         }
       }
     }

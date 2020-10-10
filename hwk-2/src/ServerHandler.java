@@ -1,20 +1,17 @@
 import java.io.*;
 import java.net.*;
-import java.util.*;
 
 public class ServerHandler {
 
   // initialized in constructor
   private ServerSocket mServerSocket;
-  private HashMap<String, ArrayList<Email>> emails;
 
   // initialized later on
   private Socket mClientSocket;
   private BufferedReader clientReader;
   private DataOutputStream clientWriter;
-
   private String currentUser;
-  private boolean loggedIn;
+  private boolean clientConnected;
 
   /**
    * Construtor -
@@ -24,9 +21,15 @@ public class ServerHandler {
    */
   public ServerHandler(int port) throws IOException {
     mServerSocket = new ServerSocket(port);
-    emails = new HashMap<>();
-    loggedIn = false;
   }
+
+  /**
+   * isClientConnected -
+   * returns boolean flag denoting if a client is connected
+   *
+   * @return - boolean, is client connected
+   */
+  public boolean isClientConnected() { return clientConnected; }
 
   /**
    * listenforRequest -
@@ -51,87 +54,35 @@ public class ServerHandler {
     clientReader = new BufferedReader(
         new InputStreamReader(mClientSocket.getInputStream()));
     clientWriter = new DataOutputStream(mClientSocket.getOutputStream());
+    clientConnected = true;
 
     return mClientSocket.getInetAddress().toString();
   }
 
   /**
-   * sendResponse -
-   * Sends a response to the client
+   * logUserIn -
+   * accepts a username and logs that user in, storing their username until
+   * the logout message is received. Sends an ack
    *
-   * @param msg - String of response
+   * @param user - username to log in
    * @throws IOException
    */
-  public void sendResponse(String msg) throws IOException {
-    clientWriter.writeBytes(msg);
-  }
-
-  public boolean isLoggedIn() { return loggedIn; }
-
-  /**
-   * login -
-   * log the user in. Sets username and loggedin flag
-   *
-   * @param username - String of username
-   * @throws IOException
-   */
-  public void login(String username) throws IOException {
-    currentUser = username;
-    loggedIn = true;
-    sendResponse(EmailUtils.constructTcpMessage(EmailUtils.LOG_IN_ACK,
-                                                EmailUtils.OK_STATUS));
+  public void logUserIn(String user) throws IOException {
+    currentUser = user;
+    sendAck(EmailUtils.LOG_IN_ACK);
   }
 
   /**
-   * addEmail -
-   * adds an Email to the internal email storage. Creates a new inbox if
-   * necessary
+   * sendAck -
+   * sends an ok status ack to client with the type value equal to the string
+   * passed in
    *
-   * @param email - serialized email
+   * @param ackTypeValue - a string with the type value for the ack
    * @throws IOException
    */
-  public void addEmail(String email) throws IOException {
-    // adds to user mailbox, or creates a new inbox if necessary
-    Email emailToInstert = new Email(email);
-    if (emails.containsKey(emailToInstert.to)) {
-      emails.get(emailToInstert.to).add(emailToInstert);
-    } else {
-      ArrayList<Email> newList = new ArrayList<Email>();
-      newList.add(emailToInstert);
-      emails.put(emailToInstert.to, newList);
-    }
-
-    sendResponse(EmailUtils.constructTcpMessage(EmailUtils.SEND_EMAIL_ACK,
-                                                EmailUtils.OK_STATUS));
-  }
-
-  /**
-   * fetchEmails -
-   * Returns a string serilization of all the emails in the current user's
-   * inbox. Empty inbox is denoted as the lone email delimeter (ZZZ)
-   *
-   * @throws IOException
-   */
-  public void fetchEmails() throws IOException {
-    ArrayList<Email> userMsgs;
-    String arg = EmailUtils.EMAIL_DELIM;
-
-    // construct string if user has a mailbox
-    if (emails.containsKey(currentUser)) {
-      userMsgs = emails.get(currentUser);
-      String partialRequest = "";
-
-      for (final Email msg : userMsgs) {
-        partialRequest += msg.toString() + EmailUtils.EMAIL_DELIM;
-      }
-      arg = partialRequest.substring(
-          0,
-          partialRequest.length() -
-              EmailUtils.EMAIL_DELIM.length()); // get rid of extra delim at end
-    }
-
-    sendResponse(EmailUtils.constructTcpMessage(
-        EmailUtils.RETRIEVE_RESPONSE, EmailUtils.EMAIL_LIST_KEY, arg));
+  public void sendAck(String ackTypeValue) throws IOException {
+    sendResponse(
+        EmailUtils.constructTcpMessage(ackTypeValue, EmailUtils.OK_STATUS));
   }
 
   /**
@@ -141,10 +92,40 @@ public class ServerHandler {
    *
    * @throws IOException
    */
-  public void logout() throws IOException {
-    sendResponse(EmailUtils.constructTcpMessage(EmailUtils.LOG_OUT_ACK,
-                                                EmailUtils.OK_STATUS));
+  public void logUserOut() throws IOException {
+    sendAck(EmailUtils.LOG_OUT_ACK);
     currentUser = "";
-    loggedIn = false;
+    clientConnected = false;
+  }
+
+  /**
+   * getCurrentUser -
+   * returns the current user
+   */
+  public String getCurrentUser() { return currentUser; }
+
+  /**
+   * returnFetchedEmails -
+   * accepts an EmailStorage and send the client the the emails belonging to
+   * the current user
+   *
+   * @param emails - EmailStorage that contains users' inboxes
+   * @throws IOException
+   */
+  public void returnFetchedEmails(EmailStorage emails) throws IOException {
+    sendResponse(EmailUtils.constructTcpMessage(
+        EmailUtils.RETRIEVE_RESPONSE, EmailUtils.EMAIL_LIST_KEY,
+        emails.fetchEmails(currentUser)));
+  }
+
+  /**
+   * sendResponse -
+   * Sends a response to the client
+   *
+   * @param msg - String of response
+   * @throws IOException
+   */
+  private void sendResponse(String msg) throws IOException {
+    clientWriter.writeBytes(msg);
   }
 }
