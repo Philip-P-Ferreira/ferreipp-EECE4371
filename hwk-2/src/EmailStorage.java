@@ -1,11 +1,12 @@
 import java.util.*;
 
 public class EmailStorage {
-
   HashMap<String, ArrayList<Email>> emails;
 
   // Default constructor
-  public EmailStorage() { emails = new HashMap<>(); }
+  public EmailStorage() {
+    emails = new HashMap<>();
+  }
 
   /**
    * addEmail -
@@ -45,10 +46,9 @@ public class EmailStorage {
       for (final Email msg : userMsgs) {
         partialRequest += msg.toString() + EmailUtils.EMAIL_DELIM;
       }
-      arg = partialRequest.substring(
-          0,
-          partialRequest.length() -
-              EmailUtils.EMAIL_DELIM.length()); // get rid of extra delim at end
+      arg = partialRequest.substring(0,
+          partialRequest.length()
+              - EmailUtils.EMAIL_DELIM.length()); // get rid of extra delim at end
     }
     return arg;
   }

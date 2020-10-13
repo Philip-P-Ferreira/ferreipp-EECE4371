@@ -8,7 +8,6 @@ import java.net.*;
  * into the server
  */
 public class ClientRequestHandler {
-
   private String user;
   private Socket socket;
   private DataOutputStream outToServer;
@@ -26,8 +25,7 @@ public class ClientRequestHandler {
     user = userName;
     socket = new Socket(EmailUtils.SERVER_ADDRESS, EmailUtils.PORT);
     outToServer = new DataOutputStream(socket.getOutputStream());
-    readFromServer =
-        new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    readFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
     // method to log into server
     login();
@@ -40,7 +38,6 @@ public class ClientRequestHandler {
    * @throws IOException
    */
   public void login() throws IOException {
-
     sendMessage(EmailUtils.LOG_IN, EmailUtils.USERNAME_KEY, user);
     readFromServer.readLine();
   }
@@ -54,7 +51,6 @@ public class ClientRequestHandler {
    * @throws IOException
    */
   public Email[] fetchMail() throws IOException {
-
     sendMessage(EmailUtils.RETRIEVE_EMAILS);
     return parseEmailResponse(readFromServer.readLine());
   }
@@ -67,7 +63,6 @@ public class ClientRequestHandler {
    * @throws IOException
    */
   public void sendMail(Email mail) throws IOException {
-
     sendMessage(EmailUtils.SEND_EMAIL, EmailUtils.EMAIL_KEY, mail.toString());
     readFromServer.readLine(); // listen for response
   }
@@ -79,14 +74,15 @@ public class ClientRequestHandler {
    * @throws IOException
    */
   public void close() throws IOException {
-
     sendMessage(EmailUtils.LOG_OUT);
     readFromServer.readLine(); // listen to response
 
     socket.close(); // be a good client and close it out
   }
 
-  public String getCurrentUser() { return user; }
+  public String getCurrentUser() {
+    return user;
+  }
 
   /**
    * sendMessage -
@@ -98,8 +94,7 @@ public class ClientRequestHandler {
    * @param arg - actual argument
    * @throws IOException
    */
-  private void sendMessage(String type, String argName, String arg)
-      throws IOException {
+  private void sendMessage(String type, String argName, String arg) throws IOException {
     outToServer.writeBytes(EmailUtils.constructTcpMessage(type, argName, arg));
   }
 
@@ -125,7 +120,6 @@ public class ClientRequestHandler {
    * @return - An array of type Email with all of a user's mail
    */
   private Email[] parseEmailResponse(String serverResponse) {
-
     Email emailList[] = {};
     ProtocolMap argMap = new ProtocolMap(serverResponse);
 

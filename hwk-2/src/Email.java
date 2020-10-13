@@ -1,5 +1,4 @@
 public class Email {
-
   // member variables
   public String to;
   public String from;
@@ -33,8 +32,7 @@ public class Email {
    * @param serializedEmail - a serialized email
    */
   public Email(String serializedEmail) {
-    ProtocolMap fieldMap =
-        new ProtocolMap(serializedEmail, FIELD_DELIM, FIELD_SEPARATOR);
+    ProtocolMap fieldMap = new ProtocolMap(serializedEmail, FIELD_DELIM, FIELD_SEPARATOR);
     to = fieldMap.get(TO_FIELD);
     from = fieldMap.get(FROM_FIELD);
     body = fieldMap.get(BODY_FIELD);
@@ -45,8 +43,7 @@ public class Email {
    * Converts an email into its tcp message string.
    */
   public String toString() {
-    return TO_FIELD + FIELD_SEPARATOR + to + FIELD_DELIM + FROM_FIELD +
-        FIELD_SEPARATOR + from + FIELD_DELIM + BODY_FIELD + FIELD_SEPARATOR +
-        body;
+    return TO_FIELD + FIELD_SEPARATOR + to + FIELD_DELIM + FROM_FIELD + FIELD_SEPARATOR + from
+        + FIELD_DELIM + BODY_FIELD + FIELD_SEPARATOR + body;
   }
 }

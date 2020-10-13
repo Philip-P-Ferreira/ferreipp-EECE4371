@@ -1,5 +1,4 @@
 public class EmailUtils {
-
   // constants used in server and client
   public static final String COMMAND_KEY = "type";
   public static final String PAIR_DELIM = "&";
@@ -45,9 +44,7 @@ public class EmailUtils {
    * @param arg - value for second argument
    * @return - tcp String message
    */
-  public static String constructTcpMessage(String type, String argName,
-                                           String arg) {
-    return COMMAND_KEY + PAIR_SEPARATOR + type + PAIR_DELIM + argName +
-        PAIR_SEPARATOR + arg + '\n';
+  public static String constructTcpMessage(String type, String argName, String arg) {
+    return COMMAND_KEY + PAIR_SEPARATOR + type + PAIR_DELIM + argName + PAIR_SEPARATOR + arg + '\n';
   }
 }

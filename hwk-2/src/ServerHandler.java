@@ -2,7 +2,6 @@ import java.io.*;
 import java.net.*;
 
 public class ServerHandler {
-
   // initialized in constructor
   private ServerSocket mServerSocket;
 
@@ -29,7 +28,9 @@ public class ServerHandler {
    *
    * @return - boolean, is client connected
    */
-  public boolean isClientConnected() { return clientConnected; }
+  public boolean isClientConnected() {
+    return clientConnected;
+  }
 
   /**
    * listenforRequest -
@@ -51,8 +52,7 @@ public class ServerHandler {
    */
   public String waitForClientConnect() throws IOException {
     mClientSocket = mServerSocket.accept();
-    clientReader = new BufferedReader(
-        new InputStreamReader(mClientSocket.getInputStream()));
+    clientReader = new BufferedReader(new InputStreamReader(mClientSocket.getInputStream()));
     clientWriter = new DataOutputStream(mClientSocket.getOutputStream());
     clientConnected = true;
 
@@ -81,8 +81,8 @@ public class ServerHandler {
    * @throws IOException
    */
   public void sendAck(String ackTypeValue) throws IOException {
-    sendResponse(
-        EmailUtils.constructTcpMessage(ackTypeValue, EmailUtils.STATUS_KEY, EmailUtils.STATUS_OK_VALUE));
+    sendResponse(EmailUtils.constructTcpMessage(
+        ackTypeValue, EmailUtils.STATUS_KEY, EmailUtils.STATUS_OK_VALUE));
   }
 
   /**
@@ -102,7 +102,9 @@ public class ServerHandler {
    * getCurrentUser -
    * returns the current user
    */
-  public String getCurrentUser() { return currentUser; }
+  public String getCurrentUser() {
+    return currentUser;
+  }
 
   /**
    * returnFetchedEmails -
@@ -114,8 +116,7 @@ public class ServerHandler {
    */
   public void returnFetchedEmails(EmailStorage emails) throws IOException {
     sendResponse(EmailUtils.constructTcpMessage(
-        EmailUtils.RETRIEVE_RESPONSE, EmailUtils.EMAIL_LIST_KEY,
-        emails.fetchEmails(currentUser)));
+        EmailUtils.RETRIEVE_RESPONSE, EmailUtils.EMAIL_LIST_KEY, emails.fetchEmails(currentUser)));
   }
 
   /**

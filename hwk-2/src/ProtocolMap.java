@@ -1,11 +1,12 @@
 import java.util.HashMap;
 
 public class ProtocolMap {
-
   HashMap<String, String> map;
 
   // default constructor
-  public ProtocolMap() { map = new HashMap<>(); }
+  public ProtocolMap() {
+    map = new HashMap<>();
+  }
 
   // alt constructor
   public ProtocolMap(String str, String delimiter, String separator) {
@@ -13,7 +14,9 @@ public class ProtocolMap {
   }
 
   // alt constructor
-  public ProtocolMap(String str) { generate(str); }
+  public ProtocolMap(String str) {
+    generate(str);
+  }
 
   /**
    * generate -
@@ -54,5 +57,7 @@ public class ProtocolMap {
    * @param key - key to value
    * @return
    */
-  public String get(String key) { return map.get(key); }
+  public String get(String key) {
+    return map.get(key);
+  }
 }

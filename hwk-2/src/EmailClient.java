@@ -2,7 +2,6 @@ import java.io.IOException;
 import java.util.*;
 
 class EmailClient {
-
   // Enum of command types
   public static enum COMMANDS {
     RETRIEVE_MAIL,
@@ -11,7 +10,6 @@ class EmailClient {
   }
 
   public static void main(String[] args) throws IOException {
-
     // create the objects for getting user input and handling requests
     Scanner console = new Scanner(System.in);
     ClientRequestHandler requestHandler = logUserIn(console);
@@ -21,19 +19,19 @@ class EmailClient {
     while (session) {
       // get command from user, do corresponding task
       switch (getUserCommand(console)) {
-      case RETRIEVE_MAIL:
-        // method to retrieve mail
-        fetchMail(requestHandler);
-        break;
-      case COMPOSE_NEW_MAIL:
-        // method to compose and send new email
-        composeNewMail(console, requestHandler);
-        break;
-      case LOG_OUT:
-        // method for logging out and closing connections
-        logUserOut(requestHandler);
-        session = false;
-        break;
+        case RETRIEVE_MAIL:
+          // method to retrieve mail
+          fetchMail(requestHandler);
+          break;
+        case COMPOSE_NEW_MAIL:
+          // method to compose and send new email
+          composeNewMail(console, requestHandler);
+          break;
+        case LOG_OUT:
+          // method for logging out and closing connections
+          logUserOut(requestHandler);
+          session = false;
+          break;
       }
     }
   }
@@ -46,9 +44,7 @@ class EmailClient {
    * @param input - Scanner that points to source of input (e.g. console)
    * @return - String of username
    */
-  public static ClientRequestHandler logUserIn(Scanner input)
-      throws IOException {
-
+  public static ClientRequestHandler logUserIn(Scanner input) throws IOException {
     System.out.print("Enter a username to login: ");
     String userName = input.nextLine();
 
@@ -67,13 +63,11 @@ class EmailClient {
    * @return - COMMAND enum type. One of 3 commands
    */
   public static COMMANDS getUserCommand(Scanner input) {
-
     int commandNum = -1;
     boolean validInput = false;
 
     // for easy indexing and returning
-    COMMANDS COMMAND_LIST[] = {COMMANDS.COMPOSE_NEW_MAIL,
-                               COMMANDS.RETRIEVE_MAIL, COMMANDS.LOG_OUT};
+    COMMANDS COMMAND_LIST[] = {COMMANDS.COMPOSE_NEW_MAIL, COMMANDS.RETRIEVE_MAIL, COMMANDS.LOG_OUT};
 
     // loop as long as input isn't valid
     while (!validInput) {
@@ -100,9 +94,7 @@ class EmailClient {
    * @param handler - Instance of a connection to a server
    * @throws IOException
    */
-  public static void fetchMail(ClientRequestHandler handler)
-      throws IOException {
-
+  public static void fetchMail(ClientRequestHandler handler) throws IOException {
     Email messages[] = handler.fetchMail();
     if (messages.length == 0) {
       System.out.println("Inbox is empty");
@@ -146,8 +138,7 @@ class EmailClient {
    * @param handler - instance of server connection
    * @throws IOException
    */
-  public static void logUserOut(ClientRequestHandler handler)
-      throws IOException {
+  public static void logUserOut(ClientRequestHandler handler) throws IOException {
     System.out.println("Logging out...");
     handler.close();
   }
