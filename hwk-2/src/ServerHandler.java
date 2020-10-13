@@ -82,7 +82,7 @@ public class ServerHandler {
    */
   public void sendAck(String ackTypeValue) throws IOException {
     sendResponse(
-        EmailUtils.constructTcpMessage(ackTypeValue, EmailUtils.OK_STATUS));
+        EmailUtils.constructTcpMessage(ackTypeValue, EmailUtils.STATUS_KEY, EmailUtils.STATUS_OK_VALUE));
   }
 
   /**

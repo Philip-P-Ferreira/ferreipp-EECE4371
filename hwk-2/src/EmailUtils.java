@@ -3,7 +3,8 @@ public class EmailUtils {
   // constants used in server and client
   public static final String COMMAND_KEY = "type";
   public static final String PAIR_DELIM = "&";
-  public static final String OK_STATUS = "status: ok";
+  public static final String STATUS_KEY = "status";
+  public static final String STATUS_OK_VALUE = "ok";
   public static final String EMAIL_DELIM = "ZZZ";
   public static final String PAIR_SEPARATOR = "=";
 
@@ -48,18 +49,5 @@ public class EmailUtils {
                                            String arg) {
     return COMMAND_KEY + PAIR_SEPARATOR + type + PAIR_DELIM + argName +
         PAIR_SEPARATOR + arg + '\n';
-  }
-
-  /**
-   * constructTcpMessage -
-   * Constructs a tcp message with a pair and a single value (like for ack
-   * messages)
-   *
-   * @param type - type value
-   * @param arg - unpaired value
-   * @return - tcp String message
-   */
-  public static String constructTcpMessage(String type, String arg) {
-    return "type" + PAIR_SEPARATOR + type + PAIR_DELIM + arg + '\n';
   }
 }
