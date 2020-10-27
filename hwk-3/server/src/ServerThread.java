@@ -1,14 +1,15 @@
-package src.utils;
-
-import static src.utils.EmailProtocol.*;
-
+import static utils.EmailProtocol.*;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
+import utils.*;
+import server.utils.*;
 
 public class ServerThread implements Runnable {
-  // static variable to hold all emails
+  // static variables to hold server instance info
   private static EmailStorage emailStorage = new EmailStorage();
+  private static TokenManager tokenManager = new TokenManager();
+  
 
   // stream held by each individual thread
   private TcpStream serverStream;

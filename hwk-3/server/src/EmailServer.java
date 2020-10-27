@@ -1,8 +1,9 @@
-import static src.utils.EmailProtocol.*;
+// package server.src;
+//TODO check if this works / remove
 
 import java.io.IOException;
 import java.net.*;
-import src.utils.ServerThread;
+import static utils.EmailProtocol.*;
 
 public class EmailServer {
   public static void main(String[] args) throws IOException {

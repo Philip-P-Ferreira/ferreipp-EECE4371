@@ -1,7 +1,7 @@
-package src.utils;
+package server.utils;
 
-import static src.utils.EmailProtocol.*;
-
+import static utils.EmailProtocol.*;
+import utils.*;
 import java.util.*;
 
 public class EmailStorage {
