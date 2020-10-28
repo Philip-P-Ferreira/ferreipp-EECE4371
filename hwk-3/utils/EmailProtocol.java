@@ -7,11 +7,13 @@ public class EmailProtocol {
   // constants used in server and client
   public static final String COMMAND_KEY = "type";
   public static final String PAIR_DELIM = "&";
+  
+  public static final String EMAIL_DELIM = "ZZZ";
+  public static final String PAIR_SEPARATOR = "=";
+
   public static final String STATUS_KEY = "status";
   public static final String STATUS_OK_VALUE = "ok";
   public static final String STATUS_FAIL_VALUE = "failed";
-  public static final String EMAIL_DELIM = "ZZZ";
-  public static final String PAIR_SEPARATOR = "=";
 
   public static final String TOKEN_KEY = "token";
 
@@ -19,6 +21,7 @@ public class EmailProtocol {
   public static final String LOG_IN_ACK = "log_in_ack";
   public static final String USERNAME_KEY = "username";
   public static final String PASSWORD_KEY = "password";
+  
   public static final String LOG_OUT = "log_out";
   public static final String LOG_OUT_ACK = "log_out_ack";
 
