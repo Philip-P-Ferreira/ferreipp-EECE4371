@@ -1,6 +1,7 @@
+import static utils.EmailProtocol.*;
+
 import java.io.IOException;
 import java.net.*;
-import static utils.EmailProtocol.*;
 
 public class EmailServer {
   public static void main(String[] args) throws IOException {

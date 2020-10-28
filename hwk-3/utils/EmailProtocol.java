@@ -7,7 +7,7 @@ public class EmailProtocol {
   // constants used in server and client
   public static final String COMMAND_KEY = "type";
   public static final String PAIR_DELIM = "&";
-  
+
   public static final String EMAIL_DELIM = "ZZZ";
   public static final String PAIR_SEPARATOR = "=";
 
@@ -22,7 +22,7 @@ public class EmailProtocol {
   public static final String LOG_IN_ACK = "log_in_ack";
   public static final String USERNAME_KEY = "username";
   public static final String PASSWORD_KEY = "password";
-  
+
   public static final String LOG_OUT = "log_out";
   public static final String LOG_OUT_ACK = "log_out_ack";
 
@@ -61,13 +61,23 @@ public class EmailProtocol {
     return map;
   }
 
-  public static void sendProtocolMessage(TcpStream stream, String type, HashMap<String,String> argMap) throws IOException {
+  /**
+   * sendProtocolMessage -
+   * accepts a command type, a tcpStream, and a map. Creates a string of key value pairs
+   * based on the map and sends via the tcp stream
+   *
+   * @param stream - tcpStream, communicates to a socket
+   * @param type - commands type value
+   * @param argMap - map of key value pairs to send
+   * @throws IOException
+   */
+  public static void sendProtocolMessage(
+      TcpStream stream, String type, HashMap<String, String> argMap) throws IOException {
     String msg = COMMAND_KEY + PAIR_SEPARATOR + type;
-    
-    for (final Map.Entry<String,String> pair : argMap.entrySet() ) {
+
+    for (final Map.Entry<String, String> pair : argMap.entrySet()) {
       msg += PAIR_DELIM + pair.getKey() + PAIR_SEPARATOR + pair.getValue();
     }
     stream.write(msg + '\n');
-
   }
 }

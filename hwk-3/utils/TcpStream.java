@@ -65,7 +65,7 @@ public class TcpStream {
   /**
    * getPort -
    * returns the port that socket is connected to as an int
-   * 
+   *
    * @return - int, port number
    */
   public int getPort() {
