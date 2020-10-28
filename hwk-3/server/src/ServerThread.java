@@ -7,8 +7,9 @@ import server.utils.*;
 
 public class ServerThread implements Runnable {
   // static variables to hold server instance info
-  private static EmailStorage emailStorage = new EmailStorage();
+  // private static EmailStorage emailStorage = new EmailStorage();
   private static TokenManager tokenManager = new TokenManager();
+  private static AccountManager accounts = new AccountManager();
   
 
   // stream held by each individual thread
@@ -25,10 +26,7 @@ public class ServerThread implements Runnable {
     System.out.println(
         "\nClient connected at " + serverStream.getIpAddress() + " on thread " + threadID);
 
-    String userName = "";
-    boolean threadOn = true;
     try {
-      while (threadOn) {
         // extract request type
         HashMap<String, String> argMap =
             createProtocolMap(serverStream.read(), PAIR_DELIM, PAIR_SEPARATOR);
@@ -37,42 +35,59 @@ public class ServerThread implements Runnable {
         System.out.print("\nThread " + threadID + " -> ");
         switch (argMap.get(COMMAND_KEY)) {
           case LOG_IN:
-            userName = argMap.get(USERNAME_KEY);
-            System.out.println("Logged in as user: " + userName);
-            sendOkAck(serverStream, LOG_IN_ACK);
+            logUserIn(argMap, serverStream);
             break;
 
           case SEND_EMAIL:
-            System.out.println(userName + ": sending email");
-            emailStorage.addEmail(argMap.get(EMAIL_KEY));
-            sendOkAck(serverStream, SEND_EMAIL_ACK);
+            
             break;
 
           case RETRIEVE_EMAILS:
-            System.out.println(userName + ": fetching emails");
-            sendProtocolMessage(serverStream, RETRIEVE_RESPONSE, EMAIL_LIST_KEY,
-                emailStorage.fetchEmails(userName));
+            
             break;
 
           case LOG_OUT:
-            System.out.println("Logging user " + userName + " out");
-            threadOn = false;
-            sendOkAck(serverStream, LOG_OUT_ACK);
+          
             break;
 
           default:
             System.out.println("Unrecognized command. Closing thread");
-            threadOn = false;
         }
-      }
       serverStream.close();
     } catch (IOException e) {
       System.out.println("\nThread " + threadID + " -> Could not reach client");
     }
   }
 
-  // sends an ok acknowledgment to the passed in stream of type ackType
-  private static void sendOkAck(TcpStream stream, String ackType) throws IOException {
-    sendProtocolMessage(stream, ackType, STATUS_KEY, STATUS_OK_VALUE);
+  // performs all necessary actions to log user in
+  private static void logUserIn(final HashMap<String,String> argMap, TcpStream stream) throws IOException{
+    // username, password, and map to store response
+    String userName = argMap.get(USERNAME_KEY);
+    String password = argMap.get(PASSWORD_KEY);
+    HashMap<String, String> responseArgMap = new HashMap<String,String>();
+    
+    // checks if username and password are valid
+    // OR cretes new user with given password
+    if (accounts.userExists(userName)) {
+      if (accounts.passwordMatches(userName, password)) {
+        System.out.println("Logging in as user: " + userName);
+
+        responseArgMap.put(STATUS_KEY, STATUS_OK_VALUE);
+        responseArgMap.put(TOKEN_KEY, tokenManager.newToken(userName));
+
+      } else {
+        System.out.println("Invalid username and password");
+
+        responseArgMap.put(STATUS_KEY, STATUS_FAIL_VALUE);
+      }
+
+    } else {
+      System.out.println("Creating new user: " + userName);
+
+      accounts.addUser(userName, password);
+      responseArgMap.put(STATUS_KEY, STATUS_OK_VALUE);
+      responseArgMap.put(TOKEN_KEY, tokenManager.newToken(userName));
+    }
+    sendProtocolMessage(stream, LOG_IN_ACK, responseArgMap);
   }
 }

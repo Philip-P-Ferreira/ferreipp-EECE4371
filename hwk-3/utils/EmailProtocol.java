@@ -9,12 +9,16 @@ public class EmailProtocol {
   public static final String PAIR_DELIM = "&";
   public static final String STATUS_KEY = "status";
   public static final String STATUS_OK_VALUE = "ok";
+  public static final String STATUS_FAIL_VALUE = "failed";
   public static final String EMAIL_DELIM = "ZZZ";
   public static final String PAIR_SEPARATOR = "=";
+
+  public static final String TOKEN_KEY = "token";
 
   public static final String LOG_IN = "log_in";
   public static final String LOG_IN_ACK = "log_in_ack";
   public static final String USERNAME_KEY = "username";
+  public static final String PASSWORD_KEY = "password";
   public static final String LOG_OUT = "log_out";
   public static final String LOG_OUT_ACK = "log_out_ack";
 
@@ -28,7 +32,7 @@ public class EmailProtocol {
 
   // change these to change server port / address
   public static final int PORT = 6789;
-  public static final String SERVER_ADDRESS = "10.0.2.2";
+  public static final String SERVER_ADDRESS = "127.0.0.1";
 
   /**
    * createProtocolMap -
@@ -53,48 +57,13 @@ public class EmailProtocol {
     return map;
   }
 
-  /**
-   * sendProtocolMessage -
-   * Defines the standard Email Protocol message. Uses the Tcpstream to send a
-   * formatted protocol message consisting of key-value pairs of Strings. Key
-   * and value are joined by a pair separator, pairs are joined by the pair
-   * delimiter
-   *
-   * @param stream - Tcpstream used to communicated to another host
-   * @param type - name of request type
-   * @param argName - name of argument
-   * @param arg - actual argument
-   * @throws IOException
-   */
-  public static void sendProtocolMessage(TcpStream stream, String type, String argName, String arg)
-      throws IOException {
-    stream.write(
-        COMMAND_KEY + PAIR_SEPARATOR + type + PAIR_DELIM + argName + PAIR_SEPARATOR + arg + '\n');
-  }
+  public static void sendProtocolMessage(TcpStream stream, String type, HashMap<String,String> argMap) throws IOException {
+    String msg = COMMAND_KEY + PAIR_SEPARATOR + type;
+    
+    for (final Map.Entry<String,String> pair : argMap.entrySet() ) {
+      msg += PAIR_DELIM + pair.getKey() + PAIR_SEPARATOR + pair.getValue();
+    }
+    stream.write(msg + '\n');
 
-  /**
-   * sendProtocolMessage -
-   * Overloaded method to send a message with just a single pair (no argument)
-   * @param stream
-   * @param type
-   * @throws IOException
-   */
-  public static void sendProtocolMessage(TcpStream stream, String type) throws IOException {
-    stream.write(COMMAND_KEY + PAIR_SEPARATOR + type + '\n');
-  }
-
-  /**
-   * sendProtocolMessage -
-   * Overloaded method to send one pair with an unpaired valued. Currently only
-   * used for acknowledgment responses.
-   *
-   * @param stream - Tcpstream used to communicated to another host
-   * @param type - name of request type
-   * @param arg - unpaired argument to send
-   * @throws IOException
-   */
-  public static void sendProtocolMessage(TcpStream stream, String type, String arg)
-      throws IOException {
-    stream.write(COMMAND_KEY + PAIR_SEPARATOR + type + PAIR_DELIM + arg + '\n');
   }
 }
