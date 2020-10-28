@@ -21,8 +21,16 @@ public class TokenManager {
         tokenGen =new Random(System.currentTimeMillis()); // use current time as seed
     }
 
-    // 
-    public String newToken(String userName) {
+    /**
+     * newToken - 
+     * Generates a token for the given user name, and stores as a 
+     * token-user pair. Tokens are a random alphanumeric string of
+     * length TOKEN_LEN. Is synchronized
+     * 
+     * @param userName - String, username
+     * @return - String, the new token
+     */
+    public synchronized String newToken(String userName) {
         
         String token = "";
         for (int i = 0; i < TOKEN_LEN; ++i) {
@@ -33,11 +41,26 @@ public class TokenManager {
         return token;
     }
 
-    public void destroyToken(String token) {
+    /**
+     * destroyToken -
+     * Removes the passed in token from memory.
+     * No-op if token doesn't exist. Is synchronized
+     * 
+     * @param token - String, token to destroy
+     */
+    public synchronized void destroyToken(String token) {
         tokenMap.remove(token);
     }
 
-    public String getUser(String token) {
+    /**
+     * getUser -
+     * Returns the associated user of a token.
+     * Return NULL if no such token exists. Is synchronized
+     * 
+     * @param token - String, token
+     * @return - String, of user or null, is no user exists
+     */
+    public synchronized String getUser(String token) {
         return tokenMap.get(token);
     }
 }

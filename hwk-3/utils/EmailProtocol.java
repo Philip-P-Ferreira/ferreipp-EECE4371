@@ -16,6 +16,7 @@ public class EmailProtocol {
   public static final String STATUS_FAIL_VALUE = "failed";
 
   public static final String TOKEN_KEY = "token";
+  public static final String INVALID_TOKEN_VALUE = "invalid_token";
 
   public static final String LOG_IN = "log_in";
   public static final String LOG_IN_ACK = "log_in_ack";

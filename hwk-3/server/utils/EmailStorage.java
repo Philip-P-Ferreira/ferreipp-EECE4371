@@ -15,11 +15,11 @@ public class EmailStorage {
   /**
    * addEmail -
    * adds an Email to the internal email storage. Creates a new inbox if
-   * necessary
+   * necessary. Is synchronized
    *
    * @param email - serialized email
    */
-  public void addEmail(String serializedEmail) {
+  public synchronized void addEmail(String serializedEmail) {
     // adds to user mailbox, or creates a new inbox if necessary
     Email emailToInsert = new Email(serializedEmail);
     if (emails.containsKey(emailToInsert.to)) {
@@ -34,13 +34,13 @@ public class EmailStorage {
   /**
    * fetchEmails -
    * Returns a string serilization of all the emails in the current user's
-   * inbox. Empty inbox is denoted as the lone email delimeter (ZZZ)
+   * inbox. Empty inbox is denoted as the lone email delimeter (ZZZ). Is synchronized
    *
    * @param user - user to query by
    * @return - returns a serialized email list
    * @throws IOException
    */
-  public String fetchEmails(String user) {
+  public synchronized String fetchEmails(String user) {
     ArrayList<Email> userMsgs;
     String arg = EMAIL_DELIM;
 

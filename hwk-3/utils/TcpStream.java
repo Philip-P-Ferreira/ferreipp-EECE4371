@@ -53,12 +53,23 @@ public class TcpStream {
 
   /**
    * getIpAddress -
-   * Returns a string of the ip address of the socket
+   * Returns a string of the ip address to which
+   * the socket is connected
    *
    * @return - ip address string
    */
   public String getIpAddress() {
     return socket.getInetAddress().toString();
+  }
+
+  /**
+   * getPort -
+   * returns the port that socket is connected to as an int
+   * 
+   * @return - int, port number
+   */
+  public int getPort() {
+    return socket.getPort();
   }
 
   /**

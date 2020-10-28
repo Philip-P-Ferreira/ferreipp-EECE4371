@@ -1,6 +1,3 @@
-// package server.src;
-//TODO check if this works / remove
-
 import java.io.IOException;
 import java.net.*;
 import static utils.EmailProtocol.*;
