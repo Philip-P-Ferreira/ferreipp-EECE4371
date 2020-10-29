@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">DroidMail</string>
+    <string name="login_button_label">Log In</string>
+    <string name="username_field_label">Username</string>
+    <string name="password_field_label">Password</string>
 </resources>
