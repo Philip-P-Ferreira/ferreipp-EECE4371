@@ -1,6 +1,6 @@
 import java.io.IOException;
 import java.util.Scanner;
-import utils.*;
+import emailutils.*;
 
 public class tmpClient {
   public static void main(String[] args) throws IOException {

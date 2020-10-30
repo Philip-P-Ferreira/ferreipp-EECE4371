@@ -1,4 +1,4 @@
-package utils;
+package emailutils;
 
 import java.io.*;
 import java.net.*;

@@ -1,6 +1,6 @@
-package utils;
+package emailutils;
 
-import static utils.EmailProtocol.*;
+import static emailutils.EmailProtocol.*;
 
 import java.util.HashMap;
 

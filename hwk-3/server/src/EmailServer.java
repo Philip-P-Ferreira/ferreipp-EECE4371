@@ -1,4 +1,4 @@
-import static utils.EmailProtocol.*;
+import static emailutils.EmailProtocol.*;
 
 import java.io.IOException;
 import java.net.*;
