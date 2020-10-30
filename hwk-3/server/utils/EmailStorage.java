@@ -2,8 +2,8 @@ package server.utils;
 
 import static emailutils.EmailProtocol.*;
 
-import java.util.*;
 import emailutils.*;
+import java.util.*;
 
 public class EmailStorage {
   HashMap<String, ArrayList<Email>> emails;

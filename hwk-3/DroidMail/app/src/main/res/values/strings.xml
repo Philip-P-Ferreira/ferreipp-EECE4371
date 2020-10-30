@@ -1,7 +1,9 @@
 <resources>
-    <string name="app_name">DroidMail</string>
-    <string name="login_button_label">Log In</string>
-    <string name="username_field_label">Username</string>
-    <string name="password_field_label">Password</string>
-    <string name="empty_field">Please provide both fields</string>
+<string name="app_name">DroidMail</string>
+<string name="login_button_label">Log In</string>
+<string name="username_field_label">Username</string>
+<string name="password_field_label">Password</string>
+<string name="empty_field">Please provide both fields</string>
+<string name="invalid_credentials">Invalid username or password</string>
+<string name="bad_connection">Could not connect to server</string>
 </resources>

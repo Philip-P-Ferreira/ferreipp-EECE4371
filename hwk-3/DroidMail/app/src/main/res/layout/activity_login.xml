@@ -57,10 +57,11 @@
 
     <TextView
         android:id="@+id/feedbackText"
-        android:layout_width="166dp"
-        android:layout_height="29dp"
+        android:layout_width="336dp"
+        android:layout_height="40dp"
+        android:gravity="center"
         android:textColor="#FF0000"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/usernameField"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"

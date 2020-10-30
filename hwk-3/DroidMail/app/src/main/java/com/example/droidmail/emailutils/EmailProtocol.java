@@ -1,4 +1,4 @@
-package emailutils;
+package com.example.droidmail.emailutils;
 
 import java.io.IOException;
 import java.util.*;
@@ -36,7 +36,7 @@ public class EmailProtocol {
 
   // change these to change server port / address
   public static final int PORT = 6789;
-  public static final String SERVER_ADDRESS = "127.0.0.1";
+  public static final String SERVER_ADDRESS = "10.0.2.2";
 
   /**
    * createProtocolMap -
@@ -78,7 +78,6 @@ public class EmailProtocol {
     for (final Map.Entry<String, String> pair : argMap.entrySet()) {
       msg += PAIR_DELIM + pair.getKey() + PAIR_SEPARATOR + pair.getValue();
     }
-    System.out.println(msg);
     stream.write(msg + '\n');
   }
 }
