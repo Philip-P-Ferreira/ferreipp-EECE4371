@@ -1,10 +1,10 @@
 import static emailutils.EmailProtocol.*;
 
+import emailutils.*;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
 import server.utils.*;
-import emailutils.*;
 
 public class ServerThread implements Runnable {
   // static variables to hold server instance info
