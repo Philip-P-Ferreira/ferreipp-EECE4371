@@ -9,13 +9,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.droidmail.emailutils.EmailProtocol;
-import com.example.droidmail.emailutils.TcpStream;
-import java.io.IOException;
+
 import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
 
-    HashMap<String, String> argMap, responseMap;
+    HashMap<String, String> argMap;
     EditText passwordField;
     EditText usernameField;
     TextView feedbackText;
@@ -36,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         argMap = new HashMap<>();
     }
 
-    public void logUserIn(View view) throws InterruptedException {
+    public void logUserIn(View view) {
         // hide keyboard
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(),0);
@@ -53,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         if (!username.isEmpty() && !password.isEmpty()) {
 
             // send args to server, get response
-            responseMap = NetworkThread.getNetworkResponse(argMap, EmailProtocol.LOG_IN);
+            HashMap<String,String> responseMap = NetworkThread.getNetworkResponse(argMap, EmailProtocol.LOG_IN);
 
             // if server actually responded (no error was thrown)
             if (!responseMap.isEmpty()) {

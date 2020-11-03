@@ -68,6 +68,7 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.ViewHolder> 
             emailText = mResources.getString(R.string.email_display, email.from, email.body);
         }
 
+        // set text inside email view
         TextView textView = holder.emailView;
         textView.setText(emailText);
     }
@@ -75,7 +76,7 @@ public class EmailAdapter extends RecyclerView.Adapter<EmailAdapter.ViewHolder> 
     public int getItemCount() {
 
         // return 1 if inbox is empty
-        // ensures adapter runs once to dipslay empty inbox text
+        // ensures adapter runs once to display empty inbox text
         // otherwise return proper size
         int size = emailList.size();
         return size == 0 ? 1 : size;

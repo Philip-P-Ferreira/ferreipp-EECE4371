@@ -70,8 +70,15 @@ public class ListViewActivity extends AppCompatActivity {
 
     public void refreshClick(View view) {
 
+        // get new email list while keeping track of size
+        int prevSize = emails.size();
         getEmailListResponse();
-        adapter.notifyDataSetChanged();
+        int curSize = emails.size();
+
+        // if the size has changed, notify adapter
+        if (prevSize != curSize) {
+            adapter.notifyItemRangeChanged(prevSize, curSize - prevSize);
+        }
     }
 
     public void composeClick(View view) {

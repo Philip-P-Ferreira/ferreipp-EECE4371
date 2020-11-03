@@ -13,6 +13,8 @@ public class NetworkThread {
     public static HashMap<String,String> getNetworkResponse(final HashMap<String,String> argMap, final String commandType) {
 
         responseMap = new HashMap<>();
+
+        //define a network task for a new thread
         Runnable task = new Runnable() {
             @Override
             public void run() {
