@@ -1,8 +1,5 @@
 package com.example.droidmail;
 
-import android.content.Intent;
-import android.widget.TextView;
-
 import com.example.droidmail.emailutils.EmailProtocol;
 import com.example.droidmail.emailutils.TcpStream;
 

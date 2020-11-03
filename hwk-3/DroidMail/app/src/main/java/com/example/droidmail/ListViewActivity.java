@@ -21,6 +21,7 @@ public class ListViewActivity extends AppCompatActivity {
     String token;
     TextView errorText;
     ArrayList<Email> emails;
+    EmailAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +40,12 @@ public class ListViewActivity extends AppCompatActivity {
         errorText = findViewById(R.id.errorText);
 
         // get first email list
-        refreshClick(findViewById(R.id.refreshButton));
+        emails = new ArrayList<Email>();
+        getEmailListResponse();
 
         // set up email adapter and Recycler View
         RecyclerView rvEmails = findViewById(R.id.emailListView);
-        EmailAdapter adapter = new EmailAdapter(emails);
+        adapter = new EmailAdapter(emails);
         rvEmails.setAdapter(adapter);
         rvEmails.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -68,22 +70,8 @@ public class ListViewActivity extends AppCompatActivity {
 
     public void refreshClick(View view) {
 
-        // reset email var
-        emails = new ArrayList<>();
-
-        // define action for successful network request
-        ClickAction listAction = new ClickAction() {
-            @Override
-            public void callback(HashMap<String, String> res) {
-                // parse out response for individual emails
-                for (final String emailStr : res.get(EmailProtocol.EMAIL_LIST_KEY).split(EmailProtocol.EMAIL_DELIM)) {
-                    emails.add(new Email(emailStr));
-                }
-            }
-        };
-
-        // method for networking and performing action
-        commonClickActions(new HashMap<String, String>(), EmailProtocol.RETRIEVE_EMAILS, listAction);
+        getEmailListResponse();
+        adapter.notifyDataSetChanged();
     }
 
     public void composeClick(View view) {
@@ -118,6 +106,28 @@ public class ListViewActivity extends AppCompatActivity {
         if (displayError) {
             errorText.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void getEmailListResponse() {
+
+        // define action for successful network request
+        ClickAction listAction = new ClickAction() {
+            @Override
+            public void callback(HashMap<String, String> res) {
+
+                // parse out response for individual emails
+                ArrayList<Email> newList = new ArrayList<>();
+                for (final String emailStr : res.get(EmailProtocol.EMAIL_LIST_KEY).split(EmailProtocol.EMAIL_DELIM)) {
+                    newList.add(new Email(emailStr));
+                }
+                // update emails
+                emails.clear();
+                emails.addAll(newList);
+            }
+        };
+
+        // method for networking and performing action
+        commonClickActions(new HashMap<String, String>(), EmailProtocol.RETRIEVE_EMAILS, listAction);
     }
 
     // interface for defining a callback
