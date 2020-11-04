@@ -18,7 +18,7 @@ import java.util.*;
 public class ListViewActivity extends AppCompatActivity {
 
     // member vars
-    String token;
+    String token, username;
     TextView errorText;
     ArrayList<Email> emails;
     EmailAdapter adapter;
@@ -30,11 +30,12 @@ public class ListViewActivity extends AppCompatActivity {
 
         // get current intent and username header view
         Intent curIntent = getIntent();
-        TextView userNameHeader = findViewById(R.id.userNameHeader);
+        TextView userNameHeader = findViewById(R.id.listViewNameHeader);
 
         // set header and get token extra
-        userNameHeader.setText(curIntent.getStringExtra(USERNAME));
+        username = curIntent.getStringExtra(USERNAME);
         token = curIntent.getStringExtra(TOKEN);
+        userNameHeader.setText(username);
 
         // find editable field
         errorText = findViewById(R.id.errorText);
@@ -55,17 +56,11 @@ public class ListViewActivity extends AppCompatActivity {
         // store instance of "this" to use in callback
         final ListViewActivity thisReference = this;
 
-        // create callback for successful network operations
-        ClickAction logOutAction = new ClickAction() {
-            @Override
-            public void callback(HashMap<String, String> res) {
                 Intent nextIntent = new Intent(thisReference, LoginActivity.class);
                 startActivity(nextIntent);
-            }
-        };
 
-        // method for networking and performing action
-        commonClickActions(new HashMap<String, String>(), EmailProtocol.LOG_OUT, logOutAction);
+        // no need to validate, either we log out, or the session is over anyway
+        NetworkActions.getServerResponse(new HashMap<String, String>(), EmailProtocol.LOG_OUT);
     }
 
     public void refreshClick(View view) {
@@ -83,42 +78,18 @@ public class ListViewActivity extends AppCompatActivity {
 
     public void composeClick(View view) {
 
+        // set next intent, put extras
+        Intent nextIntent = new Intent(this, ComposeActivity.class);
+        nextIntent.putExtra(USERNAME, username);
+        nextIntent.putExtra(TOKEN, token);
 
-    }
-
-    public void commonClickActions(final HashMap<String, String> argMap, final String commandType, final ClickAction action) {
-
-        // set error text to invisible and put in the token
-        errorText.setVisibility(View.INVISIBLE);
-        argMap.put(EmailProtocol.TOKEN_KEY, token);
-
-        // get response from server
-        HashMap<String,String> responseMap = NetworkThread.getNetworkResponse(argMap, commandType);
-
-        // go through all possible errors
-        boolean displayError = true;
-        if (!responseMap.isEmpty()) {
-            String status = responseMap.get(EmailProtocol.STATUS_KEY);
-            if (status == null) {
-                errorText.setText(R.string.unknown_error);
-            } else if (status.equals(EmailProtocol.STATUS_OK_VALUE)) {
-                displayError = false;
-                action.callback(responseMap);
-            } else {
-                errorText.setText(R.string.invalid_token);
-            }
-        } else {
-            errorText.setText(R.string.bad_connection);
-        }
-        if (displayError) {
-            errorText.setVisibility(View.VISIBLE);
-        }
+        startActivity(nextIntent);
     }
 
     private void getEmailListResponse() {
 
         // define action for successful network request
-        ClickAction listAction = new ClickAction() {
+        NetworkActions.OnOkStatus listAction = new NetworkActions.OnOkStatus() {
             @Override
             public void callback(HashMap<String, String> res) {
 
@@ -134,11 +105,6 @@ public class ListViewActivity extends AppCompatActivity {
         };
 
         // method for networking and performing action
-        commonClickActions(new HashMap<String, String>(), EmailProtocol.RETRIEVE_EMAILS, listAction);
-    }
-
-    // interface for defining a callback
-    private interface ClickAction {
-        void callback(final HashMap<String,String> res);
+        NetworkActions.handleRequest(new HashMap<String, String>(), EmailProtocol.RETRIEVE_EMAILS, listAction, errorText, token);
     }
 }

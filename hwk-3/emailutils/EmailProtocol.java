@@ -78,7 +78,6 @@ public class EmailProtocol {
     for (final Map.Entry<String, String> pair : argMap.entrySet()) {
       msg += PAIR_DELIM + pair.getKey() + PAIR_SEPARATOR + pair.getValue();
     }
-    System.out.println(msg);
     stream.write(msg + '\n');
   }
 }

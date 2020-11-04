@@ -150,7 +150,6 @@ public class ServerThread implements Runnable {
       System.out.println("Fetching emails for " + user);
 
       responseMap.put(EMAIL_LIST_KEY, emailStorage.fetchEmails(user));
-      responseMap.put(STATUS_KEY, STATUS_OK_VALUE);
     }
 
     sendProtocolMessage(stream, RETRIEVE_RESPONSE, responseMap);

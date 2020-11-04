@@ -14,11 +14,13 @@ import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
 
+    // member vars
     HashMap<String, String> argMap;
     EditText passwordField;
     EditText usernameField;
     TextView feedbackText;
 
+    // Constants for setting/accessing tokens
     public static final String TOKEN = "com.exmaple.droidmail.TOKEN";
     public static final String USERNAME = "com.exmaple.droidmai.USERNAME";
 
@@ -32,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         usernameField = findViewById((R.id.usernameField));
         passwordField = findViewById(R.id.passwordField);
 
+        // initialize argMap
         argMap = new HashMap<>();
     }
 
@@ -52,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
         if (!username.isEmpty() && !password.isEmpty()) {
 
             // send args to server, get response
-            HashMap<String,String> responseMap = NetworkThread.getNetworkResponse(argMap, EmailProtocol.LOG_IN);
+            HashMap<String,String> responseMap = NetworkActions.getServerResponse(argMap, EmailProtocol.LOG_IN);
 
             // if server actually responded (no error was thrown)
             if (!responseMap.isEmpty()) {
@@ -63,6 +66,8 @@ public class LoginActivity extends AppCompatActivity {
                 if (status == null) {
                     feedbackText.setText(R.string.unknown_error);
                 } else if (status.equals(EmailProtocol.STATUS_OK_VALUE)) {
+
+                    // get token, set next intent
                     String token = responseMap.get(EmailProtocol.TOKEN_KEY);
                     Intent nextIntent = new Intent(this, ListViewActivity.class);
 
@@ -80,7 +85,5 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             feedbackText.setText(R.string.empty_field);
         }
-
-
     }
 }

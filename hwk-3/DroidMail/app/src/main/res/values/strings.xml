@@ -13,4 +13,10 @@
     <string name="invalid_token">Invalid token</string>
     <string name="email_display">From: %1$s\n%2$s </string>
     <string name="empty_inbox_message">Inbox is Empty. No messages to display</string>
+    <string name="send_button_label">Send</string>
+    <string name="back_button_label">Back</string>
+    <string name="recipient_field_label">To</string>
+    <string name="body_field_label">Type text here…</string>
+    <string name="email_success_message">Email successfully sent!</string>
+    <string name="no_recipient_error">Please specify a recipient</string>
 </resources>
