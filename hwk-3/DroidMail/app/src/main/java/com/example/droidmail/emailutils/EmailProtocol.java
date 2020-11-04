@@ -36,7 +36,7 @@ public class EmailProtocol {
 
   // change these to change server port / address
   public static final int PORT = 6789;
-  public static final String SERVER_ADDRESS = "10.0.2.2";
+  public static final String SERVER_ADDRESS = "18.188.57.208";
 
   /**
    * createProtocolMap -

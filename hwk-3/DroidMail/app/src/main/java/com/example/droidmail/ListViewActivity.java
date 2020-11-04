@@ -60,7 +60,9 @@ public class ListViewActivity extends AppCompatActivity {
                 startActivity(nextIntent);
 
         // no need to validate, either we log out, or the session is over anyway
-        NetworkActions.getServerResponse(new HashMap<String, String>(), EmailProtocol.LOG_OUT);
+        HashMap<String,String> argMap = new HashMap<>();
+        argMap.put(EmailProtocol.TOKEN_KEY, token);
+        NetworkActions.getServerResponse(argMap, EmailProtocol.LOG_OUT);
     }
 
     public void refreshClick(View view) {
