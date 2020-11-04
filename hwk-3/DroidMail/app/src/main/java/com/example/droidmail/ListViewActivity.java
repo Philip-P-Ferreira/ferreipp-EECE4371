@@ -53,16 +53,24 @@ public class ListViewActivity extends AppCompatActivity {
 
     public void logOutClick(View view) throws InterruptedException {
 
-        // store instance of "this" to use in callback
-        final ListViewActivity thisReference = this;
+        errorText.setVisibility(View.INVISIBLE);
 
-                Intent nextIntent = new Intent(thisReference, LoginActivity.class);
-                startActivity(nextIntent);
-
-        // no need to validate, either we log out, or the session is over anyway
+        // access server
         HashMap<String,String> argMap = new HashMap<>();
         argMap.put(EmailProtocol.TOKEN_KEY, token);
-        NetworkActions.getServerResponse(argMap, EmailProtocol.LOG_OUT);
+        HashMap<String,String> responseMap = NetworkActions.getServerResponse(argMap, EmailProtocol.LOG_OUT);
+
+        // always go back to login on good connection
+        if (!responseMap.isEmpty()) {
+
+            // no need to validate, either we logout, or the session is over anyway
+            Intent nextIntent = new Intent(this, LoginActivity.class);
+            startActivity(nextIntent);
+        } else {
+            // on bad connect, simply display some error text
+            errorText.setText(R.string.bad_connection);
+            errorText.setVisibility(View.VISIBLE);
+        }
     }
 
     public void refreshClick(View view) {

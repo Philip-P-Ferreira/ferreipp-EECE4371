@@ -57,7 +57,7 @@ public class NetworkActions {
      * @param commandType - type of command to send to server
      * @param action - Callback function to execute if the status comes back as "ok"
      * @param feedback - TextView to view error messages should some part of the request fail
-     * @param token - String of unqiue token for a current user's session
+     * @param token - String of unique token for a current user's session
      */
     public static void handleRequest(HashMap<String, String> argMap, final String commandType, final OnOkStatus action, final TextView feedback, final String token) {
 

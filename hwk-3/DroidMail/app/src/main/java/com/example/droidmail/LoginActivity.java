@@ -8,6 +8,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.droidmail.emailutils.Email;
 import com.example.droidmail.emailutils.EmailProtocol;
 
 import java.util.HashMap;
@@ -63,9 +65,7 @@ public class LoginActivity extends AppCompatActivity {
                 String status = responseMap.get(EmailProtocol.STATUS_KEY);
 
                 // check status (null, ok, or failed)
-                if (status == null) {
-                    feedbackText.setText(R.string.unknown_error);
-                } else if (status.equals(EmailProtocol.STATUS_OK_VALUE)) {
+                if (status == null || status.equals(EmailProtocol.STATUS_OK_VALUE)) {
 
                     // get token, set next intent
                     String token = responseMap.get(EmailProtocol.TOKEN_KEY);
@@ -75,9 +75,13 @@ public class LoginActivity extends AppCompatActivity {
                     nextIntent.putExtra(TOKEN, token);
                     nextIntent.putExtra(USERNAME, username);
                     startActivity(nextIntent);
-                } else {
+
+                } else if (status.equals(EmailProtocol.STATUS_FAIL_VALUE)) {
+
                     feedbackText.setText(R.string.invalid_credentials);
                     passwordField.getText().clear();
+                } else {
+                    feedbackText.setText(R.string.unknown_error);
                 }
             } else {
                 feedbackText.setText(R.string.bad_connection);
