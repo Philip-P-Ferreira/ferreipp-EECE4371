@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">DroidMail</string>
+    <string name="login_button_label">Log In</string>
+    <string name="username_field_label">Username</string>
+    <string name="password_field_label">Password</string>
+    <string name="empty_field">Please provide both fields</string>
+    <string name="invalid_credentials">Invalid password</string>
+    <string name="bad_connection">Could not connect to server</string>
+    <string name="refresh_button_label">Refresh</string>
+    <string name="compose_button_label">Compose</string>
+    <string name="log_out_button_label">Log out</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="invalid_token">Invalid token</string>
+    <string name="email_display">From: %1$s\n%2$s </string>
+    <string name="empty_inbox_message">Inbox is Empty. No messages to display</string>
+    <string name="send_button_label">Send</string>
+    <string name="back_button_label">Back</string>
+    <string name="recipient_field_label">To</string>
+    <string name="body_field_label">Type text here…</string>
+    <string name="email_success_message">Email successfully sent!</string>
+    <string name="no_recipient_error">Please specify a recipient</string>
+</resources>
